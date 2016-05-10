@@ -13,8 +13,6 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
-import id.web.go_cak.drivergocak.session.UserSessionManager;
-import id.web.go_cak.drivergocak.utils.Const;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -24,6 +22,9 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+
+import id.web.go_cak.drivergocak.session.UserSession;
+import id.web.go_cak.drivergocak.utils.Const;
 
 public class GPSTracker extends Service implements LocationListener {
 
@@ -167,7 +168,7 @@ public class GPSTracker extends Service implements LocationListener {
         alertDialog.setTitle("GPS is settings");
 
         // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+        alertDialog.setMessage("GPS Anda belum aktif, silakan aktifkan GPS!");
 
         // On pressing Settings button
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
@@ -195,7 +196,7 @@ public class GPSTracker extends Service implements LocationListener {
         }
 //        getLocation();
         Log.e("location", "GPS position: " + getLatitude() + ", " + getLongitude());
-        UserSessionManager sessionManager = new UserSessionManager(mContext);
+        UserSession sessionManager = new UserSession(mContext);
         if (sessionManager.getIdUser() != null) {
             RequestBody formBody = new FormEncodingBuilder()
                     .add(Const.id, sessionManager.getIdUser())

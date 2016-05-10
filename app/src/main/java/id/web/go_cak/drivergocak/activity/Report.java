@@ -10,14 +10,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import id.web.go_cak.drivergocak.R;
+import id.web.go_cak.drivergocak.session.UserSession;
 import id.web.go_cak.drivergocak.utils.Const;
-
-import id.web.go_cak.drivergocak.session.UserSessionManager;
 
 public class Report extends Activity {
 
     private WebView webView;
-    private UserSessionManager sessionManager;
+    private UserSession sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +26,7 @@ public class Report extends Activity {
         toolbar.setTitle("Rekap Harian");
 
         // Session class instance
-        sessionManager = new UserSessionManager(this);
+        sessionManager = new UserSession(this);
         if (!sessionManager.isUserLoggedIn()) {
             sessionManager.checkLogin();
         }

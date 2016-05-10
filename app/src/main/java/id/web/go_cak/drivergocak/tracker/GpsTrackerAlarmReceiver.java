@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
-import id.web.go_cak.drivergocak.session.UserSessionManager;
+
+import id.web.go_cak.drivergocak.session.UserSession;
 
 // make sure we use a WakefulBroadcastReceiver so that we acquire a partial wakelock
 public class GpsTrackerAlarmReceiver extends WakefulBroadcastReceiver {
@@ -23,7 +24,7 @@ public class GpsTrackerAlarmReceiver extends WakefulBroadcastReceiver {
                 .getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
         if (wifi.isAvailable() || mobile.isAvailable()) {
-            UserSessionManager sessionManager = new UserSessionManager(context);
+            UserSession sessionManager = new UserSession(context);
             if (sessionManager.getIdUser() != null) {
                 context.startService(new Intent(context, LocationService.class));
                 Log.d(TAG, "hasil menjalankan LocationService.class ");

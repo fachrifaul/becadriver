@@ -19,7 +19,7 @@ import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.model.OauthUser;
 import id.web.go_cak.drivergocak.model.User;
 import id.web.go_cak.drivergocak.service.ServiceLogin;
-import id.web.go_cak.drivergocak.session.UserSessionManager;
+import id.web.go_cak.drivergocak.session.UserSession;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.password_edittext) EditText passwordEditText;
 
     private Boolean exit = false;
-    private UserSessionManager sessionManager;
+    private UserSession sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        sessionManager = new UserSessionManager(this);
+        sessionManager = new UserSession(this);
     }
 
     @OnClick(R.id.login_textview)

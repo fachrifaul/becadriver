@@ -7,7 +7,7 @@ import android.util.Log;
 
 import id.web.go_cak.drivergocak.activity.MainActivity;
 
-public class UserSessionManager {
+public class UserSession {
 
     // Sharedpref file name
     private static final String PREFER_NAME = "Grabspanet";
@@ -26,7 +26,7 @@ public class UserSessionManager {
     private boolean status;
 
     // Constructor
-    public UserSessionManager(Context context) {
+    public UserSession(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
         editor = pref.edit();

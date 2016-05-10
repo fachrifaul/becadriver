@@ -1,52 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGreenLight"
-    android:fitsSystemWindows="true"
-    tools:context=".activity.MainActivity">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <!--android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:titleTextColor="#000000"
-            android:titleTextColor="#000000"
-            app:popupTheme="@style/AppTheme.PopupOverlay" /-->
+        android:layout_height="wrap_content">
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar_default"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"/>
+            layout="@layout/toolbar_default"/>
 
 
     </android.support.design.widget.AppBarLayout>
 
-    <!--include layout="@layout/content_main" /-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+
     <FrameLayout
         android:id="@+id/fragment"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize">
-
-        <!--TextView
-            android:text="Load Aplikasi"
-            android:textSize="30px"
-            android:textStyle="bold"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:gravity="center"/-->
 
     </FrameLayout>
 
@@ -56,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_logout_white_24dp"/>
+        android:src="@drawable/ic_menu_logout"
+        app:backgroundTint="@color/colorPrimary"/>
 
 </android.support.design.widget.CoordinatorLayout>

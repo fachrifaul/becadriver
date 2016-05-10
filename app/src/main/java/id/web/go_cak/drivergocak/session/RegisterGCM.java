@@ -6,19 +6,13 @@ import android.util.Log;
 
 public class RegisterGCM {
 
-    // Sharedpref file name
     private static final String PREFER_NAME = "GcmMode";
-    // All Shared Preferences Keys
     private static final String IS_REGISTERED = "isRegistered";
-    // Shared Preferences reference
-    SharedPreferences pref;
-    // Editor reference for Shared preferences
-    SharedPreferences.Editor editor;
-    // Context
-    Context _context;
-    // Shared pref mode
-    int PRIVATE_MODE = 0;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+    private Context _context;
 
+    private int PRIVATE_MODE = 0;
     private String RegID, SenderID;
     private boolean status;
 
@@ -30,10 +24,7 @@ public class RegisterGCM {
     }
 
     public void createRegsiter(boolean status, String RegID) {
-
-        //public void createUserLoginSession(String StoreUserID, String email) {
         Log.v("kumaha ", RegID);
-
         // Storing status in pref
         editor.putString(Const.REGID, RegID);
         editor.putString("SENDERID", Const.SENDERID);
@@ -48,7 +39,7 @@ public class RegisterGCM {
     }
 
     public boolean checkRegsitered() {
-        if (!this.is_registered()) {
+        if (!this.isRegistered()) {
             return false;
         } else {
             return true;
@@ -60,7 +51,7 @@ public class RegisterGCM {
         editor.commit();
     }
 
-    public boolean is_registered() {
+    public boolean isRegistered() {
         return pref.getBoolean(IS_REGISTERED, status);
     }
 

@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
@@ -16,19 +20,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.view.View;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-
 import id.web.go_cak.drivergocak.R;
+import id.web.go_cak.drivergocak.session.UserSession;
 import id.web.go_cak.drivergocak.utils.Const;
 import id.web.go_cak.drivergocak.utils.JSONParser;
-import id.web.go_cak.drivergocak.session.UserSessionManager;
 
 public class CompleteActivity extends ListActivity {
 
-    private UserSessionManager sessionManager;
+    private UserSession sessionManager;
     // Progress Dialog
     private ProgressDialog pDialog;
 
@@ -74,7 +73,7 @@ public class CompleteActivity extends ListActivity {
         lv = getListView();
 
         // Session class instance
-        sessionManager = new UserSessionManager(this);
+        sessionManager = new UserSession(this);
         if (!sessionManager.isUserLoggedIn()) {
             sessionManager.checkLogin();
         }

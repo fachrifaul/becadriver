@@ -8,12 +8,11 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.SystemClock;
 
-import id.web.go_cak.drivergocak.session.UserSessionManager;
-import id.web.go_cak.drivergocak.tracker.GpsTrackerAlarmReceiver;
+import id.web.go_cak.drivergocak.session.UserSession;
 
 public class GpsTrackerBootReceiver extends BroadcastReceiver {
     private static final String TAG = "GpsTrackerBootReceiver";
-    private UserSessionManager sessionManager;
+    private UserSession sessionManager;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -29,7 +28,7 @@ public class GpsTrackerBootReceiver extends BroadcastReceiver {
 
         if (wifi.isAvailable() || mobile.isAvailable()) {
 
-            sessionManager = new UserSessionManager(context);
+            sessionManager = new UserSession(context);
             if (sessionManager.getIdUser() != null) {
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 Intent gpsTrackerIntent = new Intent(context, GpsTrackerAlarmReceiver.class);

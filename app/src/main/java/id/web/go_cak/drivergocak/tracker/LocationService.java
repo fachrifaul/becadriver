@@ -25,8 +25,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.RequestBody;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,9 +32,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import id.web.go_cak.drivergocak.session.UserSession;
 import id.web.go_cak.drivergocak.utils.Const;
-
-import id.web.go_cak.drivergocak.session.UserSessionManager;
 //import id.web.go_cak.drivergocak.session.SiklulasiSession;
 
 //import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -56,7 +53,7 @@ public class LocationService extends Service implements
     private LocationRequest locationRequest;
     private GoogleApiClient googleApiClient;
     // Session Manager Class
-    private UserSessionManager sessionManager;
+    private UserSession sessionManager;
     //private int cekFalse=0;
     //private SiklulasiSession siklulasiSession;
 
@@ -65,7 +62,7 @@ public class LocationService extends Service implements
         super.onCreate();
 
         currentlyProcessingLocation = false;
-        sessionManager = new UserSessionManager(this);
+        sessionManager = new UserSession(this);
         if (!sessionManager.isUserLoggedIn()) {
             sessionManager.checkLogin();
             currentlyProcessingLocation = false;

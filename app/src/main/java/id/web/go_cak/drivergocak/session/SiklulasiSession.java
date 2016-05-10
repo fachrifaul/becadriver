@@ -52,25 +52,6 @@ public class SiklulasiSession {
         editor.commit();
     }
 
-    /**
-     * Get stored session data
-     */
-//    public HashMap<String, String> getUserDetails() {
-//
-//        //Use hashmap to store user credentials
-//        HashMap<String, String> user = new HashMap<String, String>();
-//
-//        // user name
-//        user.put(Constants.Extra.LOGIN_STATUS_KEY, pref.getString(Constants.STATUS_KEY, null));
-//
-//
-//        // return user
-//        return user;
-//    }
-
-    /**
-     * Clear session details
-     */
     public void userLogoutUser() {
         // Clearing all user data from Shared Preferences
         editor.clear();
