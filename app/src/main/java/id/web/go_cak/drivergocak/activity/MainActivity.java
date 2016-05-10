@@ -34,27 +34,16 @@ import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.picasso.Picasso;
-//import com.loopj.android.http.AsyncHttpResponseHandler;
-//import com.loopj.android.http.RequestParams;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-//import org.apache.http.HttpResponse;
-//import org.apache.http.NameValuePair;
-//import org.apache.http.client.ClientProtocolException;
-//import org.apache.http.client.entity.UrlEncodedFormEntity;
-//import org.apache.http.client.methods.HttpPost;
-//import org.apache.http.impl.client.DefaultHttpClient;
-//import org.apache.http.message.BasicNameValuePair;
-
 import id.web.go_cak.drivergocak.R;
-import id.web.go_cak.drivergocak.fragmen.DashboardFragment;
-//import id.web.go_cak.drivergocak.service.LoopjHttpClient;
-import id.web.go_cak.drivergocak.session.UserSessionManager;
-import id.web.go_cak.drivergocak.session.SiklulasiSession;
+import id.web.go_cak.drivergocak.fragment.DashboardFragment;
 import id.web.go_cak.drivergocak.session.RegisterGCM;
+import id.web.go_cak.drivergocak.session.SiklulasiSession;
+import id.web.go_cak.drivergocak.session.UserSessionManager;
 import id.web.go_cak.drivergocak.tracker.GpsTrackerAlarmReceiver;
 import id.web.go_cak.drivergocak.utils.Const;
 
@@ -114,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
         sessionManager = new UserSessionManager(this);
         siklulasiPosition = new SiklulasiSession(this);
 
-        if (!sessionManager.isUserLoggedIn()) {
-            sessionManager.checkLogin();
+        if (sessionManager.checkLogin()) {
+            redirectLogin();
         } else {
 
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -320,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String msg) {
-            //Toast.makeText(MainActivity.this,msg,Toast.LENGTH_LONG).show();
         }
 
         private void sendRegistrationIdToBackend() {
@@ -537,6 +525,13 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, gpsTrackerIntent, 0);
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
+    }
+
+
+    private void redirectLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }

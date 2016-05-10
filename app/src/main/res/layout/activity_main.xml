@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/colorGreenLight"
+    android:fitsSystemWindows="true"
     tools:context=".activity.MainActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -28,17 +28,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"/>
 
 
     </android.support.design.widget.AppBarLayout>
 
     <!--include layout="@layout/content_main" /-->
     <FrameLayout
-        android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
 
         <!--TextView
             android:text="Load Aplikasi"
@@ -56,6 +56,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_logout_white_24dp" />
+        android:src="@drawable/ic_logout_white_24dp"/>
 
 </android.support.design.widget.CoordinatorLayout>

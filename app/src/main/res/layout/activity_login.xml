@@ -1,38 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:fitsSystemWindows="true"
-    tools:context="radi.com.gocakdriver.activity.LoginActivity">
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <!--android.support.design.widget.AppBarLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:theme="@style/AppTheme.AppBarOverlay">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
-            android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <ImageView
+            android:id="@+id/logo_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="125dp"
+            android:background="@color/colorPrimaryDark"
+            android:paddingTop="50dp"
+            android:src="@drawable/logogocak"
+            />
 
-    </android.support.design.widget.AppBarLayout-->
+        <TextView
+            android:id="@+id/login_driver_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo_image_view"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:padding="@dimen/activity_vertical_margin"
+            android:text="Login Driver"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textColor="@android:color/white"/>
 
-    <include layout="@layout/content_login" />
+        <LinearLayout
+            android:id="@+id/form_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/login_driver_textview"
+            android:background="@color/bg_white"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin">
 
-    <!--android.support.design.widget.FloatingActionButton android:id="@+id/fab"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" /-->
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/phone_tel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/phone_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:drawableLeft="@drawable/ic_form_phone"
+                    android:drawablePadding="@dimen/activity_vertical_margin"
+                    android:drawableStart="@drawable/ic_form_phone"
+                    android:hint="@string/no_telp"
+                    android:inputType="number"
+                    android:singleLine="true"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/password_tel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/password_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:drawableLeft="@drawable/ic_form_password"
+                    android:drawablePadding="@dimen/activity_vertical_margin"
+                    android:drawableStart="@drawable/ic_form_password"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:singleLine="true"/>
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/login_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/login_textview"
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/masuk"
+                android:textAllCaps="true"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
 
     <TextView
-        android:layout_width="match_parent" android:layout_height="50dp"
-        android:layout_gravity="bottom" android:layout_margin="@dimen/fab_margin"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text=""
         android:id="@+id/warning"
-        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/fab_margin"
+        android:gravity="center"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:background="@color/colorYellow"
+        android:visibility="gone"
         />
 
 </android.support.design.widget.CoordinatorLayout>
