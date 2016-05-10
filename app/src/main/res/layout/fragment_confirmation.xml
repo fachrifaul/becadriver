@@ -1,0 +1,20 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <TextView
+        android:id="@+id/tv_distance_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="halo"
+        android:layout_alignParentTop="true" />
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_distance_time" />
+
+</RelativeLayout>

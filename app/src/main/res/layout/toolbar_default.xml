@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:layout_centerHorizontal="true"
+    android:background="#FFD600"
+    android:gravity="center_vertical"
+    android:minHeight="?attr/actionBarSize"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    <!--android:layout_marginLeft="?attr/actionBarSize"-->
+    <RelativeLayout
+        android:id="@+id/change_translate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_item"
+        android:singleLine="true">
+
+
+        <ImageView
+            android:id="@+id/swap"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/logogocak" />
+
+        <ImageView
+            android:id="@+id/iconuser"
+            android:layout_toRightOf="@+id/myphoto"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_user"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            />
+
+        <ImageView
+            android:id="@+id/icontelp"
+            android:layout_toRightOf="@+id/myphoto"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_telp"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@+id/iconuser"
+
+            />
+
+        <TextView
+            android:id="@+id/userName_t"
+            android:text="Loading ...."
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="7dp"
+            android:textColor="#000000"
+            android:layout_toRightOf="@+id/iconuser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/telp_t"
+            android:layout_below="@+id/userName_t"
+            android:text="Loading ..."
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="3dp"
+            android:textColor="#000000"
+            android:layout_toRightOf="@+id/iconuser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/myphoto"
+            android:layout_width="40dp"
+            android:layout_height="?attr/actionBarSize"
+            android:src="@drawable/my_avatar"
+            android:layout_marginLeft="15dp"
+            />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.Toolbar>

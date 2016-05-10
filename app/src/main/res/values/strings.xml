@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Driver Gocak</string>
+    <string name="action_settings">Settings</string>
+
+    <!--menu-->
+    <string name="transport">Transport</string>
+    <string name="sendfood">Antar Kuliner</string>
+    <string name="sendpackage">Antar Paket</string>
+    <string name="history">Keuangan</string>
+    <string name="help">Bantuan Pusat</string>
+
+    <string name="subtransport">Antar dan jemput pelanggan</string>
+    <string name="subsendfood">Antar Kuliner</string>
+    <string name="subsendpackage">Antar Paket</string>
+    <string name="subhistory">Rekap keuangan per-hari</string>
+    <string name="subhelp">Ada masalah atau pertanyaan</string>
+
+    <string name="google_maps_key">AIzaSyBRuQwOy4jhyc3Xq8mrVEBZgK32bXdeIx8</string>
+    <string name="labelLogin">Driver Login</string>
+
+    <style name="DefaultButtonText">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:shadowColor">#f9f9f9</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+    </style>
+
+</resources>

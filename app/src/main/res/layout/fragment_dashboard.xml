@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="15dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--RelativeLayout
+        android:layout_above="@+id/gridMenu"
+        android:id="@+id/nativeAdContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/linshadow"
+        android:minHeight="100dp"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/myphoto"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/my_avatar"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/linshadow"
+            />
+
+        <TextView
+            android:id="@+id/Nama"
+            android:layout_toRightOf="@+id/myphoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_user"
+            android:gravity="center"
+            android:drawablePadding="10dp"
+            android:text="Alex Abad"
+            />
+
+        <TextView
+            android:id="@+id/NoHp"
+            android:layout_toRightOf="@+id/myphoto"
+            android:layout_below="@+id/Nama"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/email"
+            android:gravity="center"
+            android:drawablePadding="10dp"
+            android:text="0813293456780"
+            />
+
+    </RelativeLayout-->
+
+    <GridView
+        android:id="@+id/gridMenu"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:horizontalSpacing="3dp"
+        android:numColumns="1"
+        android:padding="3dp"
+        android:verticalSpacing="3dp" />
+
+    <!--TextView
+        android:layout_below="@+id/gridMenu"
+        android:id="@+id/display"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Load No Registrasi ..."
+        android:layout_alignParentBottom="true"
+        /-->
+
+
+</LinearLayout>
