@@ -19,7 +19,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -36,7 +35,7 @@ import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.adapter.MainAdapter;
 import id.web.go_cak.drivergocak.model.Dashboard;
 import id.web.go_cak.drivergocak.service.ServiceRegisterGCM;
-import id.web.go_cak.drivergocak.session.RegisterGCM;
+import id.web.go_cak.drivergocak.session.RegisterGcmSession;
 import id.web.go_cak.drivergocak.session.RegisterIdSession;
 import id.web.go_cak.drivergocak.session.SiklulasiSession;
 import id.web.go_cak.drivergocak.session.UserSession;
@@ -54,23 +53,15 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
 
-    private MainAdapter adapter;
     private UserSession userSession;
-    private SiklulasiSession sirkulasiSession;
     private RegisterIdSession registerIdSession;
 
-    private RegisterGCM registerGCM;
     private ProgressDialog loading;
-    private String SENDER_ID = "670832882424";
-
     private static final String TAG = "GCMDemo";
     private GoogleCloudMessaging gcm;
 
     private Context context;
-    private String regid;
-
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
+    private String regIdUser;
 
     public MainActivity() {
 
@@ -96,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            adapter = new MainAdapter(this);
+            MainAdapter adapter = new MainAdapter(this);
             mRecyclerView.setAdapter(adapter);
 
             adapter.setOnItemClickListener(new MainAdapter.OnItemClickListener() {
@@ -118,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
 
             });
 
-            sirkulasiSession = new SiklulasiSession(this);
 
             GPSTracker gps = new GPSTracker(this);
             if (gps.canGetLocation()) {
@@ -132,16 +122,14 @@ public class MainActivity extends AppCompatActivity {
             //cek GCM
             registerIdSession = new RegisterIdSession(this);
 
-            registerGCM = new RegisterGCM(this);
-            if (registerGCM.checkRegsitered()) {
-
-            } else {
+            RegisterGcmSession registerGcmSession = new RegisterGcmSession(this);
+            if (!registerGcmSession.checkRegsitered()) {
                 context = getApplicationContext();
                 if (Utils.checkPlayServices(this)) {
                     gcm = GoogleCloudMessaging.getInstance(this);
-                    if (registerGCM.checkRegsitered()) {
-                        regid = registerIdSession.getRegistrationId();
-                        if (regid.isEmpty()) {
+                    if (registerGcmSession.checkRegsitered()) {
+                        regIdUser = registerIdSession.getRegistrationId();
+                        if (regIdUser.isEmpty()) {
                             new RegisterGCMBackground().execute();
                         }
                     } else {
@@ -150,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            SiklulasiSession sirkulasiSession = new SiklulasiSession(this);
             if (sirkulasiSession.isCurrentlyProc()) {
                 Toast.makeText(this, "GPS LAT " + sirkulasiSession.getlats() + " LONG " + sirkulasiSession.getlongs(), Toast.LENGTH_LONG).show();
             }
@@ -225,9 +214,9 @@ public class MainActivity extends AppCompatActivity {
                 if (gcm == null) {
                     gcm = GoogleCloudMessaging.getInstance(context);
                 }
-                regid = gcm.register(SENDER_ID);
-                Log.wtf(TAG, "Device registered, registration ID=" + regid);
-                new ServiceRegisterGCM(MainActivity.this).fetchRegister(regid, userSession.getIdUser(),
+                regIdUser = gcm.register("670832882424");
+                Log.wtf(TAG, "Device registered, registration ID=" + regIdUser);
+                new ServiceRegisterGCM(MainActivity.this).fetchRegister(regIdUser, userSession.getIdUser(),
                         new ServiceRegisterGCM.RegisterGcmCallBack() {
                             @Override
                             public void onSuccess(String message) {
@@ -241,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                         });
 
                 // Persist the regID - no need to register again.
-                registerIdSession.storeRegistrationId(regid);
+                registerIdSession.storeRegistrationId(regIdUser);
             } catch (IOException ex) {
                 Log.wtf(TAG, ex.getMessage());
             }

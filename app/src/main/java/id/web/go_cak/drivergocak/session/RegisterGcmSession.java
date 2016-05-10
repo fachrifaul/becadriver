@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-public class RegisterGCM {
+public class RegisterGcmSession {
 
     private static final String PREFER_NAME = "GcmMode";
     private static final String IS_REGISTERED = "isRegistered";
@@ -17,7 +17,7 @@ public class RegisterGCM {
     private boolean status;
 
     // Constructor
-    public RegisterGCM(Context context) {
+    public RegisterGcmSession(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
         editor = pref.edit();
