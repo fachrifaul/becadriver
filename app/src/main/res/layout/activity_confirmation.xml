@@ -1,202 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:fitsSystemWindows="true">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <!--android.support.design.widget.AppBarLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:title="Detail Transaksi"/>
 
-    </android.support.design.widget.AppBarLayout-->
+    </android.support.design.widget.AppBarLayout>
+
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <RelativeLayout
-        android:layout_marginTop="3dp"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
 
-    <WebView
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:id="@+id/webView"
-        />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="3dp">
 
-        <TableLayout
-            android:id="@+id/tableLayout1"
-            android:layout_below="@+id/webView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:shrinkColumns="*"
-            android:layout_margin="15dp"
-            >
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
 
-            <TableRow
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:visibility="gone"
+                />
+
+            <TableLayout
+                android:id="@+id/tableLayout1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:layout_below="@+id/map"
+                android:padding="@dimen/activity_vertical_margin"
+                android:shrinkColumns="*"
+                android:stretchColumns="*"
+                >
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/lbl_Name"
-                        android:layout_below="@+id/webView"
-                        android:layout_width="100dp"
-                        android:textStyle="bold"
-                        android:layout_height="wrap_content"
-                        android:text="Nama Pelanggan"
-                        />
-
-                    <TextView
-                        android:id="@+id/Name"
-                        android:layout_below="@+id/webView"
-                        android:layout_toRightOf="@+id/lbl_Name"
+                        android:id="@+id/nama_pelanggan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Loading"
+                        android:text="Nama Pelanggan"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         />
 
-         </TableRow>
+                    <TextView
+                        android:id="@+id/nama_pelanggan_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        tools:text="Radi Permadi"
 
-        <TableRow
-            android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                        />
 
-        <TextView
-            android:id="@+id/lbl_userName"
-            android:layout_below="@+id/lbl_Name"
-            android:layout_width="100dp"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            android:text="No Telp"
-            />
+                </TableRow>
 
-        <TextView
-            android:id="@+id/userName"
-            android:layout_below="@+id/lbl_Name"
-            android:layout_toRightOf="@+id/lbl_userName"
-            android:autoLink="phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="loading ..."
-            />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            </TableRow>
-            <TableRow
+                    <TextView
+                        android:id="@+id/no_telp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No Telp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        />
+
+                    <TextView
+                        android:id="@+id/no_telp_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autoLink="phone"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        tools:text="08124124124"
+                        />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/alamat_lengkap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alamat Lengkap"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        />
+
+                    <TextView
+                        android:id="@+id/alamat_lengkap_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        tools:text="Kosan 2A"
+                        />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/ongkos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ongkos"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        />
+
+                    <TextView
+                        android:id="@+id/ongkos_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        tools:text="Rp. 31.000"
+                        />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_span="2"
+                        android:text="Lokasi"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        />
+
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/lokasi_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_span="2"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        tools:text="Jl Setiabudi menuju Jl Mana (10km)"
+                        />
+
+                </TableRow>
+
+            </TableLayout>
+
+            <Button
+                android:id="@+id/prosesButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:layout_below="@+id/tableLayout1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="Konfirmasi Penjemputan"
+                android:theme="@style/ButtonYellowTheme"/>
 
-        <TextView
-            android:id="@+id/lbl_alamat"
-            android:layout_below="@+id/lbl_userName"
-            android:layout_width="250dp"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            android:text="Detail Alamat"
-            />
-
-        <TextView
-            android:id="@+id/address"
-            android:layout_below="@+id/lbl_userName"
-            android:layout_toRightOf="@+id/lbl_alamat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="loading ..."
-            />
-
-            </TableRow>
-
-            <TableRow
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:layout_below="@+id/prosesButton"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/lbl_ongkos"
-                    android:layout_below="@+id/lbl_userName"
-                    android:layout_width="250dp"
-                    android:textStyle="bold"
-                    android:layout_height="wrap_content"
-                    android:text="Ongkos"
-                    />
-
-                <TextView
-                    android:id="@+id/ongkosTXT"
-                    android:layout_below="@+id/lbl_userName"
-                    android:layout_toRightOf="@+id/lbl_ongkos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="loading ..."
-                    />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-
-                <TextView
-                    android:id="@+id/koordinat"
-                    android:layout_below="@+id/lbl_userName"
-                    android:layout_toRightOf="@+id/lbl_alamat"
+                <Button
+                    android:id="@+id/cancelButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_span="2"
-                    android:background="@drawable/cell_shape"
-                    android:text="loading Kordinat ..."
+                    android:layout_weight="50"
+                    android:text="Tidak ditemukan"
+                    android:theme="@style/ButtonGreyTheme"
+                    android:visibility="invisible"
+                    tools:visibility="visible"
                     />
 
+                <Button
+                    android:id="@+id/prosesCall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="Call"
+                    android:theme="@style/ButtonGreenTheme"
+                    android:visibility="invisible"
+                    tools:visibility="visible"
+                    />
+            </LinearLayout>
 
-            </TableRow>
 
-        </TableLayout>
-
-        <Button
-            android:visibility="invisible"
-            android:layout_margin="18dp"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/prosesCall"
-            android:layout_toRightOf="@+id/prosesButton"
-            android:background="@color/colorGreen"
-            android:textColor="#000000"
-            android:layout_below="@+id/tableLayout1"
-            android:drawableLeft="@drawable/ic_call"
-            android:text="Call"
-            />
-
-        <Button
-            android:layout_margin="20dp"
-            android:padding="10dp"
-            android:id="@+id/prosesButton"
-            android:layout_below="@+id/tableLayout1"
-            android:text="Konfirmasi Penjemputan"
-            android:background="@color/colorYellow"
-            android:textColor="#000000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:visibility="invisible"
-            android:layout_marginLeft="20dp"
-            android:padding="10dp"
-            android:id="@+id/cancelButton"
-            android:layout_below="@+id/prosesButton"
-            android:text="Tidak ditemukan"
-            android:background="@color/colorAccent"
-            android:textColor="#000000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </RelativeLayout>
+        </RelativeLayout>
     </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -17,5 +17,7 @@
     <string name="help">Bantuan Pusat</string>
 
     <string name="transaksi">Transaksi</string>
+    <string name="tidak_ada_transaksi">Tidak Ada Transaksi</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

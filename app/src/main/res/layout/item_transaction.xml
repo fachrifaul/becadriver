@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_vertical_margin">
+
+    <TextView
+        android:id="@+id/name_customer_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/no_telp_text_view"
+        android:layout_toStartOf="@+id/no_telp_text_view"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        tools:text="Radi Permana"/>
+
+    <TextView
+        android:id="@+id/no_telp_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        tools:text="0811241412"/>
+
+    <TextView
+        android:id="@+id/alamat_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_customer_text_view"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        tools:text="Jl Setia Budi"/>
+
+
+</RelativeLayout>

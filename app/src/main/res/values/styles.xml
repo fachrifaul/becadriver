@@ -10,4 +10,20 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+
+    <style name="ButtonYellowTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/color_button_highlight_yellow</item>
+        <item name="colorButtonNormal">@color/color_button_normal_yellow</item>
+    </style>
+
+    <style name="ButtonGreenTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/color_button_highlight_green</item>
+        <item name="colorButtonNormal">@color/color_button_normal_green</item>
+    </style>
+
+    <style name="ButtonGreyTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/color_button_highlight_grey</item>
+        <item name="colorButtonNormal">@color/color_button_normal_grey</item>
+    </style>
+
 </resources>

@@ -256,4 +256,10 @@ public class MainActivity extends AppCompatActivity {
                 .setAction("Action", null).show();
     }
 
+    @OnClick(R.id.logo_image_view)
+    public void onClicks() {
+        Intent intent = new Intent(this, id.web.go_cak.drivergocak.samplelocation.MainActivity.class);
+        startActivity(intent);
+    }
+
 }

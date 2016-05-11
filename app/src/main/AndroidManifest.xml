@@ -71,8 +71,6 @@
             android:name=".activity.ReportActivity"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".activity.CompleteActivity"/>
-        <activity android:name=".activity.IncompleteActivity"/>
         <activity android:name=".activity.TransaksiActivity"/>
 
         <service android:name=".service.GPSTracker"/>
@@ -118,10 +116,17 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
 
+        <!--<meta-data-->
+        <!--android:name="com.google.android.maps.v2.API_KEY"-->
+        <!--android:value="AIzaSyBRuQwOy4jhyc3Xq8mrVEBZgK32bXdeIx8"/>-->
+
+        <activity android:name=".samplelocation.MainActivity"/>
+
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBRuQwOy4jhyc3Xq8mrVEBZgK32bXdeIx8"/>
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
 
     </application>
 
 </manifest>
+
