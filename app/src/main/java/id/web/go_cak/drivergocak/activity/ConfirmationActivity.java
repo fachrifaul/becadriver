@@ -3,8 +3,11 @@ package id.web.go_cak.drivergocak.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -14,7 +17,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -23,11 +26,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-
-import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +40,7 @@ import id.web.go_cak.drivergocak.utils.Const;
 
 public class ConfirmationActivity extends Activity {
 
-    private TextView userNameTxt, address, Name, koordinat,ongkosTXT;
+    private TextView userNameTxt, address, Name, koordinat, ongkosTXT;
     private WebView webView;
     private Button prosesButton, prosesCall, cancelButton;
     private int confirmasi = 0;
@@ -55,11 +53,6 @@ public class ConfirmationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //toolbar.setTitle("Konfirmasi Antar");
-        //setSupportActionBar(toolbar);
-
-        //Toast.makeText(this,"ada di Confirmasi",Toast.LENGTH_LONG).show();
 
         b = getIntent().getExtras();
 
@@ -91,9 +84,9 @@ public class ConfirmationActivity extends Activity {
         final String ongkos = b.getString("ongkos");
         String driverkonfirmasi = b.getString("driverkonfirmasi");
 
-        if((!userName.isEmpty()) &&(!nama.isEmpty()) || (!LatTujuan.isEmpty())) {
+        if ((!userName.isEmpty()) && (!nama.isEmpty()) || (!LatTujuan.isEmpty())) {
             //Toast.makeText(this,userName+"="+nama+""+LatTujuan,Toast.LENGTH_LONG).show();
-            Log.i("Confirmation ", "Dari GCM : " + userName + "Nama: " + nama +"="+LatJemput);
+            Log.i("Confirmation ", "Dari GCM : " + userName + "Nama: " + nama + "=" + LatJemput);
         }
 
         Name = (TextView) findViewById(R.id.Name);
@@ -201,7 +194,7 @@ public class ConfirmationActivity extends Activity {
             startActivity(callIntent);
         } catch (ActivityNotFoundException activityException) {
             Log.e("helloandroid dialing ", "Call failed");
-            Toast.makeText(getApplicationContext(),"Panggilan Tidak Bisa dilakukan",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Panggilan Tidak Bisa dilakukan", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -214,7 +207,7 @@ public class ConfirmationActivity extends Activity {
                 Address returnedAddress = addresses.get(0);
                 StringBuilder strReturnedAddress = new StringBuilder("");
 
-                for (int i = 0; i < (returnedAddress.getMaxAddressLineIndex()-1); i++) {
+                for (int i = 0; i < (returnedAddress.getMaxAddressLineIndex() - 1); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append(" ");
                 }
                 strAdd = strReturnedAddress.toString();
@@ -230,10 +223,10 @@ public class ConfirmationActivity extends Activity {
     }
 
     private void Process() {
-        String urlSuffix = Const.WELCOME_URL + "ProcessTransaksi/"+confirmasi;
+        String urlSuffix = Const.WELCOME_URL + "ProcessTransaksi/" + confirmasi;
         RequestBody formBody = new FormEncodingBuilder()
                 .add("idTransaksi", id)
-                        .build();
+                .build();
 
         com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
                 .url(urlSuffix)
@@ -272,23 +265,23 @@ public class ConfirmationActivity extends Activity {
 
                         @Override
                         public void run() {
-                            if(confString.equals("0")) {
+                            if (confString.equals("0")) {
                                 prosesButton.setText("Konfirmasi Penjemputan");
                                 confirmasi = 0;
-                            } else if(confString.equals("1")) {
+                            } else if (confString.equals("1")) {
                                 prosesButton.setText("Proses Antar");
                                 prosesCall.setVisibility(View.VISIBLE);
                                 cancelButton.setVisibility(View.VISIBLE);
                                 confirmasi = 1;
-                            } else if(confString.equals("2")) {
+                            } else if (confString.equals("2")) {
                                 prosesButton.setText("Telah Sampai Tujuan");
                                 cancelButton.setVisibility(View.INVISIBLE);
                                 confirmasi = 2;
-                            } else if(confString.equals("5") || confString.equals("3")) {
+                            } else if (confString.equals("5") || confString.equals("3")) {
 
-                                    Intent sendIntent = new Intent(ConfirmationActivity.this, TransaksiActivity.class);
-                                    startActivity(sendIntent);
-                                    finish();
+                                Intent sendIntent = new Intent(ConfirmationActivity.this, TransaksiActivity.class);
+                                startActivity(sendIntent);
+                                finish();
 
                             }
                         }

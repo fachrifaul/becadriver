@@ -34,16 +34,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.adapter.MainAdapter;
 import id.web.go_cak.drivergocak.model.Dashboard;
+import id.web.go_cak.drivergocak.service.GPSTracker;
 import id.web.go_cak.drivergocak.service.ServiceRegisterGCM;
 import id.web.go_cak.drivergocak.session.RegisterGcmSession;
 import id.web.go_cak.drivergocak.session.RegisterIdSession;
 import id.web.go_cak.drivergocak.session.SiklulasiSession;
 import id.web.go_cak.drivergocak.session.UserSession;
-import id.web.go_cak.drivergocak.tracker.GPSTracker;
 import id.web.go_cak.drivergocak.utils.ApiConstant;
 import id.web.go_cak.drivergocak.utils.Const;
+import id.web.go_cak.drivergocak.utils.DividerItemDecoration;
 import id.web.go_cak.drivergocak.utils.Utils;
-import id.web.go_cak.drivergocak.views.DividerItemDecoration;
 
 public class MainActivity extends AppCompatActivity {
     @Bind(R.id.coordinatorLayout) CoordinatorLayout coordinatorLayout;
@@ -96,12 +96,11 @@ public class MainActivity extends AppCompatActivity {
                     if (position == 0) {
                         Intent sendIntent = new Intent(MainActivity.this, TransaksiActivity.class);
                         startActivity(sendIntent);
-                        finish();
+                        overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
                     } else if (position == 1) {
-
-                        Intent sendIntent = new Intent(MainActivity.this, Report.class);
+                        Intent sendIntent = new Intent(MainActivity.this, ReportActivity.class);
                         startActivity(sendIntent);
-                        finish();
+                        overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
                     } else {
                         showSnackBar("Jalur Pusat masih tertutup");
                     }
@@ -140,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
             SiklulasiSession sirkulasiSession = new SiklulasiSession(this);
             if (sirkulasiSession.isCurrentlyProc()) {
-                Toast.makeText(this, "GPS LAT " + sirkulasiSession.getlats() + " LONG " + sirkulasiSession.getlongs(), Toast.LENGTH_LONG).show();
+                Log.wtf(TAG, "onCreate: " + "GPS LAT " + sirkulasiSession.getlats() + " LONG " + sirkulasiSession.getlongs());
             }
 
         }

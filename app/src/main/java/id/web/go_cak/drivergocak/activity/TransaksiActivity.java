@@ -1,108 +1,54 @@
 package id.web.go_cak.drivergocak.activity;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.TabActivity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
-import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import id.web.go_cak.drivergocak.R;
-import id.web.go_cak.drivergocak.tracker.GpsTrackerAlarmReceiver;
+import id.web.go_cak.drivergocak.adapter.TabAdapter;
+import id.web.go_cak.drivergocak.utils.Utils;
 
-public class TransaksiActivity extends TabActivity {
+public class TransaksiActivity extends AppCompatActivity {
 
-    private static final String INCOMP = "Incomplete";
-    private static final String COMP = "complete";
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.tabLayout) TabLayout tabLayout;
+    @Bind(R.id.viewpager) ViewPager viewPager;
 
-    static final String TAG = "TransaksiActivity";
-
-    private Intent gpsTrackerIntent;
-    private PendingIntent pendingIntent;
-    private boolean currentlyTracking;
-    private int intervalInMinutes = 1;
-    private AlarmManager alarmManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaksi);
+        ButterKnife.bind(this);
 
-        TabHost tabHost = getTabHost();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Incomplete Tab
-        TabSpec incomp = tabHost.newTabSpec(INCOMP);
-        // Tab Icon
-        incomp.setIndicator(INCOMP, getResources().getDrawable(R.drawable.incmplote));
-        Intent InCompIntent = new Intent(this, IncompleteActivity.class);
-        // Tab Content
-        incomp.setContent(InCompIntent);
 
-        // Ccomplete Tab
-        TabSpec comp = tabHost.newTabSpec(COMP);
-        // Tab Icon
-        comp.setIndicator(COMP, getResources().getDrawable(R.drawable.done));
-        Intent CompIntent = new Intent(this, CompleteActivity.class);
-        // Tab Content
-        comp.setContent(CompIntent);
+        viewPager.setAdapter(new TabAdapter(getSupportFragmentManager()));
+        tabLayout.setupWithViewPager(viewPager);
 
-        // Adding all TabSpec to TabHost
-        tabHost.addTab(incomp); // Adding Incomplete tab
-        tabHost.addTab(comp); // Adding Complete tab
-
-        startAlarmManager();
+        Utils.startAlarmManager(this);
 
     }
 
-    public void startAlarmManager() {
-        Log.d(TAG, "hasil startAlarmManager");
-        currentlyTracking = true;
-
-        Context context = getBaseContext();
-        alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        gpsTrackerIntent = new Intent(context, GpsTrackerAlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(context, 0, gpsTrackerIntent, 0);
-
-        // SharedPreferences sharedPreferences = this.getSharedPreferences("com.websmithing.gpstracker.prefs", Context.MODE_PRIVATE);
-        // intervalInMinutes = sharedPreferences.getInt("intervalInMinutes", 1);
-        intervalInMinutes = 3;
-
-       /* alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime(),
-                intervalInMinutes * 60000, // 60000 = 1 minute
-                pendingIntent);*/
-
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime(),
-                5000, // 60000 = 1 minute
-                pendingIntent);
-
-
-        //Toast.makeText(this,"Update GPS location",Toast.LENGTH_LONG).show();
-        Log.d("hasil", "Update GPS location");
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
+        return true;
     }
 
-    public void cancelAlarmManager() {
-        Log.d(TAG, "cancelAlarmManager");
-
-        Context context = getBaseContext();
-        Intent gpsTrackerIntent = new Intent(context, GpsTrackerAlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, gpsTrackerIntent, 0);
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
-    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent sendIntent = new Intent(TransaksiActivity.this, MainActivity.class);
-        startActivity(sendIntent);
         finish();
+        overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
     }
 
 }

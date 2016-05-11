@@ -11,7 +11,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import id.web.go_cak.drivergocak.tracker.GpsTrackerAlarmReceiver;
+import id.web.go_cak.drivergocak.service.GpsTrackerAlarmReceiver;
 
 /**
  * Created by fachrifebrian on 5/10/16.

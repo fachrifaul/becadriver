@@ -21,8 +21,8 @@ import org.w3c.dom.Document;
 import java.util.ArrayList;
 
 import id.web.go_cak.drivergocak.R;
-import id.web.go_cak.drivergocak.gdLibrary.GoogleDirection;
-import id.web.go_cak.drivergocak.gdLibrary.GoogleDirection.OnDirectionResponseListener;
+import id.web.go_cak.drivergocak.lib.GoogleDirection;
+import id.web.go_cak.drivergocak.lib.GoogleDirection.OnDirectionResponseListener;
 
 public class ConfirmationFragment extends Fragment {
 

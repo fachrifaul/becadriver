@@ -68,25 +68,25 @@
             />
 
         <activity
-            android:name=".activity.Report"
+            android:name=".activity.ReportActivity"
             android:screenOrientation="portrait"
             />
         <activity android:name=".activity.CompleteActivity"/>
         <activity android:name=".activity.IncompleteActivity"/>
         <activity android:name=".activity.TransaksiActivity"/>
 
-        <service android:name=".tracker.GPSTracker"/>
+        <service android:name=".service.GPSTracker"/>
 
-        <service android:name=".tracker.LocationService"/>
+        <service android:name=".service.LocationService"/>
 
-        <receiver android:name=".tracker.GpsTrackerBootReceiver">
+        <receiver android:name=".service.GpsTrackerBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".tracker.GpsTrackerAlarmReceiver">
+        <receiver android:name=".service.GpsTrackerAlarmReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
@@ -96,7 +96,7 @@
 
 
         <receiver
-            android:name="id.web.go_cak.drivergocak.gcm.GcmBroadcastReceiver"
+            android:name=".service.GcmBroadcastReceiver"
             android:authorities="id.web.go_cak.drivergocak"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
@@ -112,7 +112,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="id.web.go_cak.drivergocak.gcm.GcmIntentService"/>
+        <service android:name=".service.GcmIntentService"/>
 
         <meta-data
             android:name="com.google.android.gms.version"

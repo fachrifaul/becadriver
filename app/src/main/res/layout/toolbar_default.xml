@@ -11,12 +11,10 @@
     app:contentInsetStart="0dp">
 
     <RelativeLayout
-        android:id="@+id/change_translate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/logo_imageview"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
