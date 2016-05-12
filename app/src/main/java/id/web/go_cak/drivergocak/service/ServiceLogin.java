@@ -31,7 +31,7 @@ public class ServiceLogin {
         this.context = context;
     }
 
-    public void fetchLogin(String name, String password, final LoginCallBack callback) {
+    public void fetchService(String name, String password, final LoginCallBack callback) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstant.API_URL)
                 .addConverterFactory(GsonConverterFactory.create())

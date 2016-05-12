@@ -19,7 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.activity.ConfirmationActivity;
-import id.web.go_cak.drivergocak.adapter.TransactionNewAdapter;
+import id.web.go_cak.drivergocak.adapter.TransactionAdapter;
 import id.web.go_cak.drivergocak.model.DaftarTransaksi;
 import id.web.go_cak.drivergocak.model.Transaksi;
 import id.web.go_cak.drivergocak.service.ServiceTransaction;
@@ -30,7 +30,7 @@ public class IncompleteFragment extends Fragment {
     @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
 
     private List<Transaksi> transaksiList = new ArrayList<>();
-    private TransactionNewAdapter adapter;
+    private TransactionAdapter adapter;
 
     public IncompleteFragment() {
     }
@@ -53,7 +53,7 @@ public class IncompleteFragment extends Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        adapter = new TransactionNewAdapter();
+        adapter = new TransactionAdapter();
         mRecyclerView.setAdapter(adapter);
 
         final ProgressDialog pDialog = new ProgressDialog(getActivity());
@@ -63,7 +63,7 @@ public class IncompleteFragment extends Fragment {
         pDialog.show();
 
         ServiceTransaction serviceTransaction = new ServiceTransaction(getActivity());
-        serviceTransaction.fetchTransaction(ServiceTransaction.TYPE_INCOMPLETE, sessionManager.getIdUser(),
+        serviceTransaction.fetchService(ServiceTransaction.TYPE_INCOMPLETE, sessionManager.getIdUser(),
                 new ServiceTransaction.TransactionCallBack() {
                     @Override
                     public void onSuccess(DaftarTransaksi daftarTransaksi) {
@@ -81,7 +81,7 @@ public class IncompleteFragment extends Fragment {
                     }
                 });
 
-        adapter.setOnItemClickListener(new TransactionNewAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new TransactionAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Transaksi transaksi, int position) {
                 Intent intent = new Intent(getActivity(), ConfirmationActivity.class);

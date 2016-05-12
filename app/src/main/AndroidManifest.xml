@@ -56,12 +56,6 @@
             />
 
         <activity
-            android:name=".activity.ReceiveActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            />
-
-        <activity
             android:name=".activity.ConfirmationActivity"
             android:exported="true"
             android:screenOrientation="portrait"

@@ -1,21 +1,20 @@
 package id.web.go_cak.drivergocak.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,51 +36,47 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.model.Transaksi;
-import id.web.go_cak.drivergocak.utils.Const;
+import id.web.go_cak.drivergocak.service.ServiceProcess;
+import id.web.go_cak.drivergocak.utils.Utils;
 
 public class ConfirmationActivity extends AppCompatActivity implements RoutingListener,
-        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
+        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.nama_pelanggan_text_view) TextView namaPelangganTextView;
+    @Bind(R.id.no_telp_text_view) TextView noTelpTextView;
+    @Bind(R.id.alamat_lengkap_text_view) TextView alamatLengkapTextView;
+    @Bind(R.id.ongkos_text_view) TextView ongkosTextView;
+    @Bind(R.id.lokasi_text_view) TextView lokasiTextView;
+    @Bind(R.id.jarak_text_view) TextView jarakTextView;
+    @Bind(R.id.prosesButton) Button prosesButton;
+    @Bind(R.id.cancelButton) Button cancelButton;
+    @Bind(R.id.callButton) Button callButton;
+    @Bind(R.id.progressbar) ProgressBar progressbar;
+    @Bind(R.id.button_layout) View buttonLayout;
 
-    private TextView userNameTxt, address, Name, koordinat, ongkosTXT;
-    private WebView webView;
-    private Button prosesButton, prosesCall, cancelButton;
-    private int confirmasi = 0;
+    private int confirmation = 0;
     private Bundle bundle;
-    private Runnable sToastMessager;
-    private String id, confString;
     private Transaksi transaksi;
-
+    private ProgressDialog progressDialog;
     protected GoogleMap map;
-    LatLng starD;
-    LatLng endD;
+    private LatLng starD = new LatLng(-6.910569499999999, 107.6497351);
+    private LatLng endD = new LatLng(-6.928624799999999, 107.73401319999999);
     private static final String LOG_TAG = "MyActivity";
     protected GoogleApiClient mGoogleApiClient;
-//    private ProgressDialog progressDialog;
     private List<Polyline> polylines;
 
-
+    private String idTransaksi, messageConfirmation;
+    public String userName, nama, latTujuan, longTujuan, latJemput, longJemput, distance, alamatLengkap, ongkos, driverkonfirmasi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,253 +90,31 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         bundle = getIntent().getExtras();
         transaksi = (Transaksi) bundle.getSerializable("TRANSAKSI");
 
-        if (transaksi.getUserName().isEmpty()) {
-            sToastMessager = new Runnable() {
-                @Override
-                public void run() {
-                    initRun();
-                }
-            };
-            this.runOnUiThread(sToastMessager);
-        } else {
-            initRun();
-        }
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading ....");
+        progressDialog.show();
 
-
-
+        initView();
     }
 
-    private void initRun() {
-        id = transaksi.getID();
-        final String userName = transaksi.getUserName();
-        final String nama = transaksi.getNama();
-        final String LatTujuan = transaksi.getLatTujuan();
-        final String LongTujuan = transaksi.getLongTujuan();
-        final String LatJemput = transaksi.getLatJemput();
-        final String LongJemput = transaksi.getLongJemput();
-        final String distance = transaksi.getDistance();
-        final String AlamatLengkap = transaksi.getAlamatLengkap();
-        final String ongkos = transaksi.getOngkos();
-        String driverkonfirmasi = transaksi.getDriverkonfirmasi();
+    private void initView() {
+        idTransaksi = transaksi.getID();
+        userName = transaksi.getUserName();
+        nama = transaksi.getNama();
+        latTujuan = transaksi.getLatTujuan();
+        longTujuan = transaksi.getLongTujuan();
+        latJemput = transaksi.getLatJemput();
+        longJemput = transaksi.getLongJemput();
+        distance = transaksi.getDistance();
+        alamatLengkap = transaksi.getAlamatLengkap();
+        ongkos = transaksi.getOngkos();
+        driverkonfirmasi = transaksi.getDriverkonfirmasi();
 
-
-        route();
-
-        if ((!userName.isEmpty()) && (!nama.isEmpty()) || (!LatTujuan.isEmpty())) {
-            Log.i("Confirmation ", "Dari GCM : " + userName + "Nama: " + nama + "=" + LatJemput);
-        }
-
-        Name = (TextView) findViewById(R.id.nama_pelanggan_text_view);
-        userNameTxt = (TextView) findViewById(R.id.no_telp_text_view);
-        address = (TextView) findViewById(R.id.alamat_lengkap_text_view);
-        ongkosTXT = (TextView) findViewById(R.id.ongkos_text_view);
-        prosesButton = (Button) findViewById(R.id.prosesButton);
-        prosesCall = (Button) findViewById(R.id.prosesCall);
-
-        cancelButton = (Button) findViewById(R.id.cancelButton);
-        koordinat = (TextView) findViewById(R.id.lokasi_text_view);
-        webView = (WebView) findViewById(R.id.webView);
-        webView.setWebViewClient(new MyBrowser());
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        String getSend = "?LatTujuan=" + LatTujuan + "&LongTujuan=" + LongTujuan + "&LatJemput=" + LatJemput + "&LongJemput=" + LongJemput;
-        webView.loadUrl(Const.WELCOME_URL + "showjalur" + getSend);
-
-        final Geocoder geoCoder = new Geocoder(this);
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                String detailFrom = getCompleteAddressString(Double.parseDouble(LatJemput), Double.parseDouble(LongJemput));//+" - "+countryFrom;
-
-                String detailTo = getCompleteAddressString(Double.parseDouble(LatTujuan), Double.parseDouble(LongTujuan)); //+" - "+countryTo;
-
-                Double Ddistance = (Double.parseDouble(distance) / 1000);
-                DecimalFormat f = new DecimalFormat("##.0");
-                koordinat.setText(detailFrom + " menuju " + detailTo + " (" + f.format(Ddistance) + " KM) ");
-
-                userNameTxt.setText(userName);
-                address.setText(AlamatLengkap);
-                Name.setText(nama);
-                ongkosTXT.setText(ongkos);
-
-                //koordinat.setText(f.format(Ddistance)+" KM) ");
-
-            }
-        });
-
-
-        //koordinat.setText(detailFrom+" menuju "+detailTo+" ("+f.format(Ddistance)+" KM) ");
-
-
-        if (driverkonfirmasi.equals("0")) {
-            prosesButton.setText("Konfirmasi Penjemputan");
-            confirmasi = 0;
-        } else if (driverkonfirmasi.equals("1")) {
-            prosesButton.setText("Proses Antar");
-            prosesCall.setVisibility(View.VISIBLE);
-            cancelButton.setVisibility(View.VISIBLE);
-            confirmasi = 1;
-        } else if (driverkonfirmasi.equals("2")) {
-            prosesButton.setText("Telah Sampai Tujuan");
-            cancelButton.setVisibility(View.INVISIBLE);
-            confirmasi = 2;
-        } else {
-            prosesButton.setText("Konfirmasi Penjemputan");
-            confirmasi = 0;
-        }
-
-        prosesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Process();
-            }
-        });
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmasi = 4;
-                Process();
-            }
-        });
-
-        prosesCall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                call();
-            }
-        });
-
-    }
-
-    private void call() {
-
-        try {
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + userNameTxt.getText().toString()));
-            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            startActivity(callIntent);
-        } catch (ActivityNotFoundException activityException) {
-            Log.e("helloandroid dialing ", "Call failed");
-            Toast.makeText(getApplicationContext(), "Panggilan Tidak Bisa dilakukan", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
-        String strAdd = "";
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null) {
-                Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
-
-                for (int i = 0; i < (returnedAddress.getMaxAddressLineIndex() - 1); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append(" ");
-                }
-                strAdd = strReturnedAddress.toString();
-                Log.w("My Current loction ", "" + strReturnedAddress.toString());
-            } else {
-                Log.w("My Current loction ", "No Address returned!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.w("My Current loction ", "Canont get Address!");
-        }
-        return strAdd;
-    }
-
-    private void Process() {
-        String urlSuffix = Const.WELCOME_URL + "ProcessTransaksi/" + confirmasi;
-        RequestBody formBody = new FormEncodingBuilder()
-                .add("idTransaksi", id)
-                .build();
-
-        com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
-                .url(urlSuffix)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .post(formBody)
-                .build();
-
-        Call call = new OkHttpClient().newCall(request);
-        call.enqueue(new Callback() {
-
-            @Override
-            public void onFailure(Request request, IOException e) {
-                Log.e("error call", "Failed to execute " + request, e);
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                try {
-                    if (!response.isSuccessful()) {
-                        throw new IOException("Unexpected code " + response);
-                    }
-                    String respon = response.body().string();
-                    Log.v("okHttp", respon);
-                    //parse(respon);
-                    System.out.println("hasilnya adalah " + respon);
-                    JSONObject data = null;
-                    try {
-                        data = new JSONObject(respon);
-                        confString = data.getString("confirmasi");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            if (confString.equals("0")) {
-                                prosesButton.setText("Konfirmasi Penjemputan");
-                                confirmasi = 0;
-                            } else if (confString.equals("1")) {
-                                prosesButton.setText("Proses Antar");
-                                prosesCall.setVisibility(View.VISIBLE);
-                                cancelButton.setVisibility(View.VISIBLE);
-                                confirmasi = 1;
-                            } else if (confString.equals("2")) {
-                                prosesButton.setText("Telah Sampai Tujuan");
-                                cancelButton.setVisibility(View.INVISIBLE);
-                                confirmasi = 2;
-                            } else if (confString.equals("5") || confString.equals("3")) {
-
-                                Intent sendIntent = new Intent(ConfirmationActivity.this, TransaksiActivity.class);
-                                startActivity(sendIntent);
-                                finish();
-
-                            }
-                        }
-                    });
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("gagalna nyaeta " + e);
-                }
-            }
-        });
-    }
-
-
-    public void route() {
-
-        starD = new LatLng(Double.parseDouble(transaksi.getLatJemput()), Double.parseDouble(transaksi.getLongJemput()));
-        starD = new LatLng(Double.parseDouble(transaksi.getLatTujuan()), Double.parseDouble(transaksi.getLatTujuan()));
+        noTelpTextView.setText(userName);
+        alamatLengkapTextView.setText(alamatLengkap);
+        namaPelangganTextView.setText(nama);
+        ongkosTextView.setText(ongkos);
 
         polylines = new ArrayList<>();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -360,8 +133,108 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         }
         map = mapFragment.getMap();
 
-//        progressDialog = ProgressDialog.show(this, "Please wait.",
-//                "Fetching route information.", true);
+        showData();
+
+        if (driverkonfirmasi.equals("0")) {
+            prosesButton.setText("Konfirmasi Penjemputan");
+            confirmation = 0;
+        } else if (driverkonfirmasi.equals("1")) {
+            prosesButton.setText("Proses Antar");
+            callButton.setVisibility(View.VISIBLE);
+            cancelButton.setVisibility(View.VISIBLE);
+            confirmation = 1;
+        } else if (driverkonfirmasi.equals("2")) {
+            prosesButton.setText("Telah Sampai Tujuan");
+            cancelButton.setVisibility(View.INVISIBLE);
+            confirmation = 2;
+        } else {
+            prosesButton.setText("Konfirmasi Penjemputan");
+            confirmation = 0;
+        }
+
+    }
+
+    @OnClick(R.id.prosesButton)
+    public void setOnclickProses() {
+        Process();
+    }
+
+    @OnClick(R.id.cancelButton)
+    public void setOnclickCancel() {
+        confirmation = 4;
+        Process();
+    }
+
+    @OnClick(R.id.callButton)
+    public void setOnclickCall() {
+        try {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:" + noTelpTextView.getText().toString()));
+            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            startActivity(callIntent);
+        } catch (ActivityNotFoundException activityException) {
+            Log.e("helloandroid dialing ", "Call failed");
+            Toast.makeText(getApplicationContext(), "Panggilan Tidak Bisa dilakukan", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showData() {
+        if (Utils.Operations.isOnline(this)) {
+            route();
+        } else {
+            Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
+        }
+
+        new AddressBackground().execute();
+    }
+
+    private void Process() {
+        progressbar.setVisibility(View.VISIBLE);
+        buttonLayout.setVisibility(View.GONE);
+        new ServiceProcess(this).fetchService(String.valueOf(confirmation), idTransaksi, new ServiceProcess.ProcessCallBack() {
+            @Override
+            public void onSuccess(String messageConfirmation) {
+                progressbar.setVisibility(View.GONE);
+                buttonLayout.setVisibility(View.VISIBLE);
+                if (messageConfirmation.equals("0")) {
+                    prosesButton.setText("Konfirmasi Penjemputan");
+                    confirmation = 0;
+                } else if (messageConfirmation.equals("1")) {
+                    prosesButton.setText("Proses Antar");
+                    callButton.setVisibility(View.VISIBLE);
+                    cancelButton.setVisibility(View.VISIBLE);
+                    confirmation = 1;
+                } else if (messageConfirmation.equals("2")) {
+                    prosesButton.setText("Telah Sampai Tujuan");
+                    cancelButton.setVisibility(View.INVISIBLE);
+                    confirmation = 2;
+                } else if (messageConfirmation.equals("5") || messageConfirmation.equals("3")) {
+                    Intent sendIntent = new Intent(ConfirmationActivity.this, TransaksiActivity.class);
+                    startActivity(sendIntent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                buttonLayout.setVisibility(View.VISIBLE);
+                progressbar.setVisibility(View.GONE);
+                Log.wtf("ServiceProcess", message);
+            }
+        });
+    }
+
+
+    public void route() {
+        /*Log.wtf("starD", "route: " + transaksi.getLatJemput() + ", " + Double.parseDouble(transaksi.getLongJemput()));
+        Log.wtf("endD", "route: " + transaksi.getLatTujuan() + ", " + Double.parseDouble(transaksi.getLongTujuan()));*/
+
+        starD = new LatLng(Double.parseDouble(transaksi.getLatJemput()), Double.parseDouble(transaksi.getLongJemput()));
+        endD = new LatLng(Double.parseDouble(transaksi.getLatTujuan()), Double.parseDouble(transaksi.getLongTujuan()));
+
         Routing routing = new Routing.Builder()
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
                 .withListener(this)
@@ -374,13 +247,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
     @Override
     public void onRoutingFailure(RouteException e) {
-        // The Routing request failed
-//        progressDialog.dismiss();
-        if (e != null) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
-        }
+        Toast.makeText(this, "Coba lagi", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -390,10 +257,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-//        progressDialog.dismiss();
         CameraUpdate center = CameraUpdateFactory.newLatLng(starD);
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
-
         map.moveCamera(center);
         map.animateCamera(zoom);
 
@@ -405,17 +270,17 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
         polylines = new ArrayList<>();
 
-
-        int max = route.get(0).getDistanceValue();
+        int distance = route.get(0).getDistanceValue();
         int position = 0;
         for (int i = 1; i < route.size(); i++) {
-            Log.wtf("MIN", "onRoutingSuccess: " + route.get(i).getDistanceValue());
-            if (route.get(i).getDistanceValue() < max) {
-                max = route.get(i).getDistanceValue();
+            if (route.get(i).getDistanceValue() < distance) {
+                distance = route.get(i).getDistanceValue();
                 position = i;
             }
         }
-        Log.wtf("MIN2", position +" onRoutingSuccess: " + max);
+
+        String totalDistance = "(" + new DecimalFormat("##.0").format((double) distance / 1000) + " KM)";
+        jarakTextView.setText(totalDistance);
 
         PolylineOptions polyOptions = new PolylineOptions();
         polyOptions.color(getResources().getColor(R.color.accent));
@@ -445,7 +310,6 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
         Log.v(LOG_TAG, connectionResult.toString());
     }
 
@@ -456,14 +320,6 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     @Override
     public void onConnectionSuspended(int i) {
 
-    }
-
-    private class MyBrowser extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
     }
 
     @Override
@@ -479,6 +335,29 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         super.onBackPressed();
         finish();
         overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
+    }
+
+    public class AddressBackground extends AsyncTask<String, String, String> {
+        String lokasi;
+
+        @Override
+        protected String doInBackground(String... arg0) {
+            String detailFrom = Utils.getCompleteAddressString(ConfirmationActivity.this,
+                    Double.parseDouble(latJemput), Double.parseDouble(longJemput));
+            String detailTo = Utils.getCompleteAddressString(ConfirmationActivity.this,
+                    Double.parseDouble(latTujuan), Double.parseDouble(longTujuan));
+
+            lokasi = detailFrom + " menuju " + detailTo;
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            progressDialog.dismiss();
+            lokasiTextView.setText(lokasi);
+        }
     }
 
 }

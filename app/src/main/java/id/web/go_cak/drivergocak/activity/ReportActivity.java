@@ -12,7 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.session.UserSession;
-import id.web.go_cak.drivergocak.utils.Const;
+import id.web.go_cak.drivergocak.utils.ApiConstant;
 
 public class ReportActivity extends AppCompatActivity {
     @Bind(R.id.toolbar) Toolbar toolbar;
@@ -36,7 +36,7 @@ public class ReportActivity extends AppCompatActivity {
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.loadUrl(Const.WELCOME_URL + "struk/" + sessionManager.getIdUser() + "?month=01&year=2016");
+        webView.loadUrl(ApiConstant.API_URL + "struk/" + sessionManager.getIdUser() + "?month=01&year=2016");
 
     }
 

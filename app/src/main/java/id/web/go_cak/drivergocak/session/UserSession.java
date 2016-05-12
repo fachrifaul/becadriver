@@ -1,11 +1,8 @@
 package id.web.go_cak.drivergocak.session;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import id.web.go_cak.drivergocak.activity.MainActivity;
 
 public class UserSession {
 
@@ -71,49 +68,6 @@ public class UserSession {
         }
     }
 
-    public boolean checkMain() {
-        // Check login status
-        if (!this.isUserLoggedIn()) {
-
-            // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, MainActivity.class);
-
-            // Closing all the Activities from stack
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            // Staring Login Activity
-            _context.startActivity(i);
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-
-    /**
-     * Get stored session data
-     */
-//    public HashMap<String, String> getUserDetails() {
-//
-//        //Use hashmap to store user credentials
-//        HashMap<String, String> user = new HashMap<String, String>();
-//
-//        // user name
-//        user.put(Constants.Extra.LOGIN_STATUS_KEY, pref.getString(Constants.STATUS_KEY, null));
-//
-//
-//        // return user
-//        return user;
-//    }
-
-    /**
-     * Clear session details
-     */
     public void userLogoutUser() {
         // Clearing all user data from Shared Preferences
         editor.clear();

@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Loading ....");
         progressDialog.show();
 
-        new ServiceLogin(this).fetchLogin(name, password,
+        new ServiceLogin(this).fetchService(name, password,
                 new ServiceLogin.LoginCallBack() {
                     @Override
                     public void onSuccess(OauthUser oauthUser) {

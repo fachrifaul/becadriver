@@ -16,13 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -35,13 +28,13 @@ import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.adapter.MainAdapter;
 import id.web.go_cak.drivergocak.model.Dashboard;
 import id.web.go_cak.drivergocak.service.GPSTracker;
+import id.web.go_cak.drivergocak.service.ServiceLogout;
 import id.web.go_cak.drivergocak.service.ServiceRegisterGCM;
 import id.web.go_cak.drivergocak.session.RegisterGcmSession;
 import id.web.go_cak.drivergocak.session.RegisterIdSession;
 import id.web.go_cak.drivergocak.session.SiklulasiSession;
 import id.web.go_cak.drivergocak.session.UserSession;
 import id.web.go_cak.drivergocak.utils.ApiConstant;
-import id.web.go_cak.drivergocak.utils.Const;
 import id.web.go_cak.drivergocak.utils.DividerItemDecoration;
 import id.web.go_cak.drivergocak.utils.Utils;
 
@@ -55,13 +48,12 @@ public class MainActivity extends AppCompatActivity {
 
     private UserSession userSession;
     private RegisterIdSession registerIdSession;
-
     private ProgressDialog loading;
-    private static final String TAG = "GCMDemo";
     private GoogleCloudMessaging gcm;
 
     private Context context;
     private String regIdUser;
+    private static final String TAG = "GCMDemo";
 
     public MainActivity() {
 
@@ -147,54 +139,24 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     public void onClickLogout() {
-        loading = ProgressDialog.show(MainActivity.this, "Tunggu Beberapa saat", "Pengecekan database", true, true);
+        loading = ProgressDialog.show(MainActivity.this, "Keluar", "Loading...", true, false);
 
-        String url = Const.WELCOME_URL + "logoutdriver";
-        RequestBody formBody = new FormEncodingBuilder()
-                .add(Const.id, userSession.getIdUser())
-                .build();
-
-        System.out.println("hasilnya adalah " + url + "?" + userSession.getIdUser());
-
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .post(formBody)
-                .build();
-
-        Call call = new OkHttpClient().newCall(request);
-        call.enqueue(new Callback() {
+        new ServiceLogout(this).fetchService(userSession.getIdUser(), new ServiceLogout.CallBack() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                Log.e("ERORR", "Failed to execute " + request, e);
+            public void onSuccess(String message) {
+                Log.v("ServiceLogout", message);
+                userSession.userLogoutUser();
+                loading.dismiss();
+                Utils.cancelAlarmManager(MainActivity.this);
+
+                Intent sendIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(sendIntent);
+                finish();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
-                try {
-                    if (!response.isSuccessful()) {
-                        throw new IOException("Unexpected code " + response);
-                    }
-
-                    String respon = response.body().string();
-                    Log.v("okHttp", respon);
-                    //parse(respon);
-                    System.out.println("hasilnya adalah " + respon);
-                    userSession.userLogoutUser();
-                    loading.dismiss();
-                    Utils.cancelAlarmManager(MainActivity.this);
-
-                    Intent sendIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(sendIntent);
-                    finish();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("gagalna nyaeta " + e);
-                }
-
-
+            public void onFailure(String message) {
+                Log.e("ServiceLogout", message);
             }
         });
     }
@@ -215,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 regIdUser = gcm.register("670832882424");
                 Log.wtf(TAG, "Device registered, registration ID=" + regIdUser);
-                new ServiceRegisterGCM(MainActivity.this).fetchRegister(regIdUser, userSession.getIdUser(),
+                new ServiceRegisterGCM(MainActivity.this).fetchService(regIdUser, userSession.getIdUser(),
                         new ServiceRegisterGCM.RegisterGcmCallBack() {
                             @Override
                             public void onSuccess(String message) {
@@ -254,12 +216,6 @@ public class MainActivity extends AppCompatActivity {
     private void showSnackBar(String message) {
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
-    }
-
-    @OnClick(R.id.logo_image_view)
-    public void onClicks() {
-        Intent intent = new Intent(this, id.web.go_cak.drivergocak.samplelocation.MainActivity.class);
-        startActivity(intent);
     }
 
 }

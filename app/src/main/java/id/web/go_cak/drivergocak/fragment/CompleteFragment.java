@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import id.web.go_cak.drivergocak.R;
-import id.web.go_cak.drivergocak.adapter.TransactionNewAdapter;
+import id.web.go_cak.drivergocak.adapter.TransactionAdapter;
 import id.web.go_cak.drivergocak.model.DaftarTransaksi;
 import id.web.go_cak.drivergocak.model.Transaksi;
 import id.web.go_cak.drivergocak.service.ServiceTransaction;
@@ -28,7 +28,7 @@ public class CompleteFragment extends Fragment {
     @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
 
     private List<Transaksi> transaksiList = new ArrayList<>();
-    private TransactionNewAdapter adapter;
+    private TransactionAdapter adapter;
 
     public CompleteFragment() {
     }
@@ -51,7 +51,7 @@ public class CompleteFragment extends Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        adapter = new TransactionNewAdapter();
+        adapter = new TransactionAdapter();
         mRecyclerView.setAdapter(adapter);
 
         final ProgressDialog pDialog = new ProgressDialog(getActivity());
@@ -61,7 +61,7 @@ public class CompleteFragment extends Fragment {
         pDialog.show();
 
         ServiceTransaction serviceTransaction = new ServiceTransaction(getActivity());
-        serviceTransaction.fetchTransaction(ServiceTransaction.TYPE_COMPLETE, sessionManager.getIdUser(),
+        serviceTransaction.fetchService(ServiceTransaction.TYPE_COMPLETE, sessionManager.getIdUser(),
                 new ServiceTransaction.TransactionCallBack() {
                     @Override
                     public void onSuccess(DaftarTransaksi daftarTransaksi) {
@@ -79,7 +79,7 @@ public class CompleteFragment extends Fragment {
                     }
                 });
 
-        adapter.setOnItemClickListener(new TransactionNewAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new TransactionAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Transaksi transaksi, int position) {
                 Log.wtf("CompleteFragment", "onItemClick: disable click" );

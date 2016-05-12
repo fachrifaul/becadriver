@@ -14,12 +14,12 @@ import butterknife.ButterKnife;
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.model.Transaksi;
 
-public class TransactionNewAdapter extends RecyclerView.Adapter<TransactionNewAdapter.ViewHolder> {
+public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
     private List<Transaksi> transaksiList = new ArrayList<>();
     private OnItemClickListener listener;
 
-    public TransactionNewAdapter() {
+    public TransactionAdapter() {
         super();
     }
 

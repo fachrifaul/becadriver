@@ -37,7 +37,7 @@ public class ServiceTransaction {
         this.context = context;
     }
 
-    public void fetchTransaction(int type, String driverID, final TransactionCallBack callback) {
+    public void fetchService(int type, String driverID, final TransactionCallBack callback) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstant.API_URL)
                 .addConverterFactory(GsonConverterFactory.create())

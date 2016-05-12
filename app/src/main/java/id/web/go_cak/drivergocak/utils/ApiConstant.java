@@ -7,8 +7,5 @@ public class ApiConstant {
 
     public static final String SERVER_URL = "http://gocak.co.id/";
     public static final String API_URL = SERVER_URL + "operator/index.php/Welcome/";
-
     public static final String IMAGE_URL = SERVER_URL + "operator/assets/foto/";
-
-
 }

@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
-    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "id.web.go_cak.drivergocak"
@@ -29,16 +28,12 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'com.google.android.gms:play-services-location:8.4.0'
-    compile 'com.squareup.okhttp:okhttp:2.7.0'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.mcxiaoke.volley:library:1.0.18'
-    compile 'org.apache.httpcomponents:httpcore:4.4.1'
-    compile 'org.apache.httpcomponents:httpclient:4.5'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.squareup.retrofit2:retrofit:2.0.1'
     compile 'com.squareup.retrofit2:converter-gson:2.0.1'
-    compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.squareup.retrofit2:converter-scalars:2.0.2'
+    compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.github.jd-alexander:library:1.1.0'
 }

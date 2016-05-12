@@ -13,18 +13,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-
-import java.io.IOException;
-
 import id.web.go_cak.drivergocak.session.UserSession;
-import id.web.go_cak.drivergocak.utils.Const;
 
 public class GPSTracker extends Service implements LocationListener {
 
@@ -194,42 +183,26 @@ public class GPSTracker extends Service implements LocationListener {
         if (location != null) {
             Log.e("location", "position: " + location.getLatitude() + ", " + location.getLongitude());
         }
-//        getLocation();
         Log.e("location", "GPS position: " + getLatitude() + ", " + getLongitude());
         UserSession sessionManager = new UserSession(mContext);
+
         if (sessionManager.getIdUser() != null) {
-            RequestBody formBody = new FormEncodingBuilder()
-                    .add(Const.id, sessionManager.getIdUser())
-                    .add(Const.LATITUDE, getLatitude() + "")
-                    .add(Const.LONGITUDE, getLongitude() + "")
-                    .add(Const.SPEED, "0")
-                    .build();
 
-            Request request = new Request.Builder()
-                    .url(Const.WELCOME_URL + "sendgps")
-                    .post(formBody)
-                    .build();
+            new ServiceSendLocation(mContext).fetchService(sessionManager.getIdUser(),
+                    String.valueOf(getLatitude()), String.valueOf(getLongitude()), "0",
+                    new ServiceSendLocation.CallBack() {
+                        @Override
+                        public void onSuccess(String message) {
+                            Log.e("ServiceSendLocation", message);
+                        }
 
-            Call call = new OkHttpClient().newCall(request);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-                    Log.e("ERORR", "Failed to execute " + request, e);
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    if (!response.isSuccessful()) {
-                        throw new IOException("Unexpected code " + response);
+                        @Override
+                        public void onFailure(String message) {
+                            Log.e("ServiceSendLocation", message);
+                        }
                     }
-
-                    String respon = response.body().string();
-                    Log.e("RESPONE LOCATION", "" + respon);
-                }
-            });
+            );
         }
-
-
     }
 
     @Override

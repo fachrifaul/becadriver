@@ -17,14 +17,13 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import id.web.go_cak.drivergocak.R;
-import id.web.go_cak.drivergocak.activity.ReceiveActivity;
+import id.web.go_cak.drivergocak.activity.TransaksiActivity;
 
 public class GcmIntentService extends IntentService{
-	Context context;
-	public static final int NOTIFICATION_ID = 1;
+	private static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
-    public static final String TAG = "GCM Demo";
+	private NotificationCompat.Builder builder;
+	private static final String TAG = "GCM Demo";
 
 	public GcmIntentService() {
 		super("GcmIntentService");
@@ -87,8 +86,8 @@ public class GcmIntentService extends IntentService{
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
         
-        Intent myIntent = new Intent(this, ReceiveActivity.class);
-		//Intent myIntent = new Intent(this, ConfirmationActivity.class);
+        Intent myIntent = new Intent(this, TransaksiActivity.class);
+		myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         myIntent.putExtra("message", msg);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
         		myIntent, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -11,38 +11,33 @@ import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**
  * Created by fachrifebrian on 4/11/16.
  */
-public class ServiceRegisterGCM {
+public class ServiceLogout {
 
-    public interface RegisterGcmUrl {
-        @Headers({
-                "Accept: application/json",
-                "Content-Type: application/json"
-        })
+    public interface LogoutUrl {
         @FormUrlEncoded
-        @POST("insertRegsiterID")
-        Call<String> registerGcm(@Field("regId") String regId, @Field("id") String id);
+        @POST("logoutdriver")
+        Call<String> getLogout(@Field("id") String id);
     }
 
     private Context context;
 
-    public ServiceRegisterGCM(Context context) {
+    public ServiceLogout(Context context) {
         this.context = context;
     }
 
-    public void fetchService(String regId, String id, final RegisterGcmCallBack callback) {
+    public void fetchService(String id, final CallBack callback) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstant.API_URL)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        RegisterGcmUrl service = retrofit.create(RegisterGcmUrl.class);
-        Call<String> listCall = service.registerGcm(regId, id);
+        LogoutUrl service = retrofit.create(LogoutUrl.class);
+        Call<String> listCall = service.getLogout(id);
         listCall.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -61,7 +56,7 @@ public class ServiceRegisterGCM {
 
     }
 
-    public interface RegisterGcmCallBack {
+    public interface CallBack {
         void onSuccess(String message);
 
         void onFailure(String message);
