@@ -283,7 +283,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         jarakTextView.setText(totalDistance);
 
         PolylineOptions polyOptions = new PolylineOptions();
-        polyOptions.color(getResources().getColor(R.color.accent));
+        polyOptions.color(getResources().getColor(R.color.colorPrimaryDark));
         polyOptions.width(10 + position * 3);
         polyOptions.addAll(route.get(position).getPoints());
         Polyline polyline = map.addPolyline(polyOptions);
