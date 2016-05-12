@@ -35,8 +35,7 @@
                 android:id="@+id/map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                tools:layout="@layout/sample_layout_maps"/>
+                android:layout_height="200dp"/>
 
             <TableLayout
                 android:id="@+id/tableLayout1"
@@ -53,7 +52,6 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/nama_pelanggan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Nama Pelanggan"
@@ -76,7 +74,6 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/no_telp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="No Telp"
@@ -99,7 +96,6 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/alamat_lengkap"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Alamat Lengkap"
@@ -121,7 +117,6 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/ongkos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Ongkos"
@@ -189,14 +184,14 @@
                 android:id="@+id/progressbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_below="@+id/tableLayout1"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:visibility="gone"/>
 
             <RelativeLayout
-                android:layout_width="match_parent"
                 android:id="@+id/button_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tableLayout1">
 
@@ -233,6 +228,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="50"
+                        android:drawableLeft="@drawable/ic_call"
                         android:text="Call"
                         android:theme="@style/ButtonGreenTheme"
                         android:visibility="invisible"

@@ -5,9 +5,6 @@
     <color name="colorAccent">#757575</color>
     <color name="bg_white">#FAFAFA</color>
 
-    <color name="colorYellow">#FFFDCB01</color>
-    <color name="colorGreen">#80a76d</color>
-
     <color name="color_button_normal_yellow">#FDD835</color>
     <color name="color_button_highlight_yellow">#FBC02D</color>
 
@@ -17,12 +14,5 @@
     <color name="color_button_normal_grey">#F5F5F5</color>
     <color name="color_button_highlight_grey">#EEEEEE</color>
 
-    <color name="primary">#00BCD4</color>
-    <color name="primary_dark">#0097A7</color>
-    <color name="primary_light">#B2EBF2</color>
     <color name="accent">#607D8B</color>
-    <color name="primary_text">#212121</color>
-    <color name="secondary_text">#727272</color>
-    <color name="icons">#FFFFFF</color>
-    <color name="divider">#B6B6B6</color>
 </resources>
