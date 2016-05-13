@@ -187,9 +187,8 @@ public class GPSTracker extends Service implements LocationListener {
         UserSession sessionManager = new UserSession(mContext);
 
         if (sessionManager.getIdUser() != null) {
-
             new ServiceSendLocation(mContext).fetchService(sessionManager.getIdUser(),
-                    String.valueOf(getLatitude()), String.valueOf(getLongitude()), "0",
+                    String.valueOf(getLatitude()), String.valueOf(getLongitude()),
                     new ServiceSendLocation.CallBack() {
                         @Override
                         public void onSuccess(String message) {

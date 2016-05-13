@@ -1,12 +1,15 @@
 package id.web.go_cak.drivergocak.service;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -99,6 +102,8 @@ public class LocationService extends Service implements
     }
 
     protected void sendLocationDataToWebsite(Location location) {
+//        Toast.makeText(this, location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+
         SharedPreferences sharedPreferences = this.getSharedPreferences("com.websmithing.gpstracker.prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -131,7 +136,7 @@ public class LocationService extends Service implements
         Log.wtf(TAG, "sendLocationDataToWebsite: " + log);
 
         new ServiceSendLocation(this).fetchService(sessionManager.getIdUser(), String.valueOf(location.getLatitude()),
-                String.valueOf(location.getLongitude()), String.valueOf(speedInMilesPerHour.intValue()),
+                String.valueOf(location.getLongitude()),
                 new ServiceSendLocation.CallBack() {
                     @Override
                     public void onSuccess(String message) {
@@ -199,6 +204,17 @@ public class LocationService extends Service implements
         locationRequest.setFastestInterval(1000); // the fastest rate in milliseconds at which your app can handle location updates
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 googleApiClient, locationRequest, this);
 

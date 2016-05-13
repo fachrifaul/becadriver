@@ -33,7 +33,7 @@ public class ServiceSendLocation {
     }
 
     public void fetchService(String id, String latitude,
-                             String longitude, String speed,
+                             String longitude,
                              final CallBack callback) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstant.API_URL)
@@ -41,7 +41,7 @@ public class ServiceSendLocation {
                 .build();
 
         SendLocationUrl service = retrofit.create(SendLocationUrl.class);
-        Call<String> listCall = service.proccesOrder(id, latitude, longitude, speed);
+        Call<String> listCall = service.proccesOrder(id, latitude, longitude, "1");
         listCall.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
