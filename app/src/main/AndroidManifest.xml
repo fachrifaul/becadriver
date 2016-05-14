@@ -7,7 +7,6 @@
         android:protectionLevel="signature"/>
 
     <uses-permission android:name="id.web.go_cak.drivergocak.permission.MAPS_RECEIVE"/>
-
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -18,7 +17,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-
     <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <permission
@@ -45,30 +43,27 @@
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
 
                 <category android:name="id.web.go_cak.drivergocak"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.LoginActivity"
-            android:screenOrientation="portrait"
-            />
-
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.ConfirmationActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
-            />
-
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.ReportActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".activity.TransaksiActivity"/>
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.TransaksiActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.DetailMapsActivity"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".service.GPSTracker"/>
-
         <service android:name=".service.LocationService"/>
 
         <receiver android:name=".service.GpsTrackerBootReceiver">
@@ -85,14 +80,11 @@
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
             </intent-filter>
         </receiver>
-
-
         <receiver
             android:name=".service.GcmBroadcastReceiver"
             android:authorities="id.web.go_cak.drivergocak"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
-
             <intent-filter>
 
                 <!-- Receives the actual messages. -->
@@ -100,7 +92,6 @@
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
 
                 <category android:name="id.web.go_cak.drivergocak"/>
-
             </intent-filter>
         </receiver>
 
@@ -110,17 +101,16 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
 
-        <!--<meta-data-->
-        <!--android:name="com.google.android.maps.v2.API_KEY"-->
-        <!--android:value="AIzaSyBRuQwOy4jhyc3Xq8mrVEBZgK32bXdeIx8"/>-->
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.maps.v2.API_KEY" -->
+        <!-- android:value="AIzaSyBRuQwOy4jhyc3Xq8mrVEBZgK32bXdeIx8"/> -->
 
-        <!--<activity android:name=".samplelocation.MainActivity"/>-->
+
+        <!-- <activity android:name=".samplelocation.MainActivity"/> -->
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
-
     </application>
 
 </manifest>
-

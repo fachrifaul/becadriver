@@ -20,7 +20,7 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -37,154 +37,134 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"/>
 
-            <TableLayout
-                android:id="@+id/tableLayout1"
+            <View
+                android:layout_width="match_parent"
+                android:id="@+id/maps_view"
+                android:background="@android:color/transparent"
+                android:layout_height="200dp"/>
+
+            <RelativeLayout
+                android:id="@+id/detail_transaksi_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/map"
-                android:padding="@dimen/activity_vertical_margin"
-                android:shrinkColumns="*"
-                android:stretchColumns="*"
-                >
+                android:padding="@dimen/activity_vertical_margin">
 
-                <TableRow
+                <TextView
+                    android:id="@+id/nama_pelanggan"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="Nama Pelanggan"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
+
+                <TextView
+                    android:id="@+id/nama_pelanggan_text_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/nama_pelanggan"
+                    android:layout_toRightOf="@+id/nama_pelanggan"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    tools:text="Radi Permadi"
+                    />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nama Pelanggan"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        />
+                <TextView
+                    android:id="@+id/no_telp"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/nama_pelanggan"
+                    android:text="No Telp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
 
-                    <TextView
-                        android:id="@+id/nama_pelanggan_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        tools:text="Radi Permadi"
-
-                        />
-
-                </TableRow>
-
-                <TableRow
+                <TextView
+                    android:id="@+id/no_telp_text_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/nama_pelanggan_text_view"
+                    android:layout_toEndOf="@+id/no_telp"
+                    android:layout_toRightOf="@+id/no_telp"
+                    android:autoLink="phone"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    tools:text="08124124124"
+                    />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="No Telp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        />
 
-                    <TextView
-                        android:id="@+id/no_telp_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autoLink="phone"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        tools:text="08124124124"
-                        />
+                <TextView
+                    android:id="@+id/ongkos"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/no_telp"
+                    android:text="Ongkos"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
 
-                </TableRow>
+                <TextView
+                    android:id="@+id/ongkos_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/no_telp_text_view"
+                    android:layout_toEndOf="@+id/ongkos"
+                    android:layout_toRightOf="@+id/ongkos"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    tools:text="Rp. 31.000"
+                    />
 
-                <TableRow
+                <TextView
+                    android:id="@+id/alamat_lengkap"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ongkos"
+                    android:text="Alamat Lengkap"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Alamat Lengkap"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        />
-
-                    <TextView
-                        android:id="@+id/alamat_lengkap_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        tools:text="Kosan 2A"
-                        />
-
-                </TableRow>
-
-                <TableRow
+                <TextView
+                    android:id="@+id/alamat_lengkap_text_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/alamat_lengkap"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    tools:text="Kosan 2A Kosan 2A Kosan 2A Kosan 2A Kosan 2A Kosan 2A "
+                    />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ongkos"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        />
 
-                    <TextView
-                        android:id="@+id/ongkos_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        tools:text="Rp. 31.000"
-                        />
-
-                </TableRow>
-
-                <TableRow
+                <TextView
+                    android:id="@+id/lokasi"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/alamat_lengkap_text_view"
+                    android:text="Lokasi"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:text="Lokasi"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        />
-
-
-                </TableRow>
-
-                <TableRow
+                <TextView
+                    android:id="@+id/lokasi_text_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lokasi"
+                    android:layout_span="2"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    tools:text="Jl Setiabudi menuju Jl Mana (10km)"
+                    />
 
-                    <TextView
-                        android:id="@+id/lokasi_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        tools:text="Jl Setiabudi menuju Jl Mana (10km)"
-                        />
-
-                </TableRow>
-
-                <TableRow
+                <TextView
+                    android:id="@+id/jarak_text_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lokasi_text_view"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    tools:text="(10km)"
+                    />
 
-                    <TextView
-                        android:id="@+id/jarak_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        tools:text="(10km)"
-                        />
 
-                </TableRow>
-
-            </TableLayout>
+            </RelativeLayout>
 
             <ProgressBar
                 android:id="@+id/progressbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tableLayout1"
+                android:layout_below="@+id/detail_transaksi_layout"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:visibility="gone"/>
@@ -193,7 +173,7 @@
                 android:id="@+id/button_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tableLayout1">
+                android:layout_below="@+id/detail_transaksi_layout">
 
                 <Button
                     android:id="@+id/prosesButton"
@@ -239,6 +219,6 @@
 
 
         </RelativeLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

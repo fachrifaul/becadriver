@@ -44,6 +44,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.model.Transaksi;
 import id.web.go_cak.drivergocak.service.ServiceProcess;
@@ -154,6 +155,17 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
     }
 
+    @OnTouch(R.id.maps_view)
+    public boolean setOnclickMaps() {
+        Intent intent = new Intent(this, DetailMapsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("TRANSAKSI", transaksi);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
+        return false;
+    }
+
     @OnClick(R.id.prosesButton)
     public void setOnclickProses() {
         Process();
@@ -258,7 +270,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
         CameraUpdate center = CameraUpdateFactory.newLatLng(starD);
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
         map.moveCamera(center);
         map.animateCamera(zoom);
 
