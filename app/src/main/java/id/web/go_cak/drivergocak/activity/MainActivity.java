@@ -1,12 +1,20 @@
 package id.web.go_cak.drivergocak.activity;
 
+import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +36,7 @@ import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.adapter.MainAdapter;
 import id.web.go_cak.drivergocak.model.Dashboard;
 import id.web.go_cak.drivergocak.service.GPSTracker;
+import id.web.go_cak.drivergocak.service.GpsTrackerBootReceiver;
 import id.web.go_cak.drivergocak.service.ServiceLogout;
 import id.web.go_cak.drivergocak.service.ServiceRegisterGCM;
 import id.web.go_cak.drivergocak.session.RegisterGcmSession;
@@ -54,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private Context context;
     private String regIdUser;
     private static final String TAG = "GCMDemo";
+    private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
 
     public MainActivity() {
 
@@ -70,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
             ButterKnife.bind(this);
             setSupportActionBar(toolbar);
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        PERMISSION_ACCESS_COARSE_LOCATION);
+            }
 
             Picasso.with(this).load(ApiConstant.IMAGE_URL + userSession.getFoto()).error(R.drawable.ic_avatar).into(avatarImageview);
             usernameTextview.setText(userSession.getUsername());
@@ -107,7 +123,16 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 gps.showSettingsAlert();
             }
-            Utils.startAlarmManager(MainActivity.this);
+
+            Intent intent = new Intent(this, GpsTrackerBootReceiver.class);
+            PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
+            AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                am.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), sender);
+            } else {
+                am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 1000, sender);
+            }
 
 
             //cek GCM
@@ -147,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.v("ServiceLogout", message);
                 userSession.userLogoutUser();
                 loading.dismiss();
-                Utils.cancelAlarmManager(MainActivity.this);
 
                 Intent sendIntent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(sendIntent);
@@ -218,4 +242,17 @@ public class MainActivity extends AppCompatActivity {
                 .setAction("Action", null).show();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_ACCESS_COARSE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // All good!
+                } else {
+                    Toast.makeText(this, "Need your location!", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+        }
+    }
 }

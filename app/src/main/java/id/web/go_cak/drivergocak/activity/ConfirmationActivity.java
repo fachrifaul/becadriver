@@ -57,7 +57,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     @Bind(R.id.no_telp_text_view) TextView noTelpTextView;
     @Bind(R.id.alamat_lengkap_text_view) TextView alamatLengkapTextView;
     @Bind(R.id.ongkos_text_view) TextView ongkosTextView;
-    @Bind(R.id.lokasi_text_view) TextView lokasiTextView;
+    @Bind(R.id.asal_text_view) TextView lokasiAsalTextView;
+    @Bind(R.id.tujuan_text_view) TextView lokasiTujuanTextView;
     @Bind(R.id.jarak_text_view) TextView jarakTextView;
     @Bind(R.id.prosesButton) Button prosesButton;
     @Bind(R.id.cancelButton) Button cancelButton;
@@ -350,16 +351,14 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     }
 
     public class AddressBackground extends AsyncTask<String, String, String> {
-        String lokasi;
+        String detailFrom, detailTo;
 
         @Override
         protected String doInBackground(String... arg0) {
-            String detailFrom = Utils.getCompleteAddressString(ConfirmationActivity.this,
+            detailFrom = Utils.getCompleteAddressString(ConfirmationActivity.this,
                     Double.parseDouble(latJemput), Double.parseDouble(longJemput));
-            String detailTo = Utils.getCompleteAddressString(ConfirmationActivity.this,
+            detailTo = Utils.getCompleteAddressString(ConfirmationActivity.this,
                     Double.parseDouble(latTujuan), Double.parseDouble(longTujuan));
-
-            lokasi = detailFrom + " menuju " + detailTo;
 
             return null;
         }
@@ -367,8 +366,17 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            progressDialog.dismiss();
-            lokasiTextView.setText(lokasi);
+            Log.wtf("AddressBackground", "onPostExecute: "+detailFrom );
+
+            if(detailFrom.equals("") || detailTo.equals("")){
+                new AddressBackground().execute();
+            }else {
+                lokasiAsalTextView.setText(detailFrom);
+                lokasiTujuanTextView.setText(detailTo);
+                progressDialog.dismiss();
+            }
+
+
         }
     }
 

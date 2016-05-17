@@ -2,14 +2,12 @@ package id.web.go_cak.drivergocak.service;
 
 import android.Manifest;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -28,7 +26,6 @@ public class LocationService extends Service implements
         LocationListener {
 
     private static final String TAG = "LocationService";
-    private boolean currentlyProcessingLocation = false;
     private LocationRequest locationRequest;
     private GoogleApiClient googleApiClient;
     private UserSession sessionManager;
@@ -36,45 +33,15 @@ public class LocationService extends Service implements
     @Override
     public void onCreate() {
         super.onCreate();
-
-        currentlyProcessingLocation = false;
         sessionManager = new UserSession(this);
         if (!sessionManager.isUserLoggedIn()) {
             sessionManager.checkLogin();
-            currentlyProcessingLocation = false;
         }
-
-        /*if (!currentlyProcessingLocation) {
-            currentlyProcessingLocation = true;
-            startTracking();
-        } else {
-            currentlyProcessingLocation = false;
-        }*/
-
-        Log.e(TAG, "hasil berada di Oncreate currentlyProcessingLocation " + currentlyProcessingLocation);
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // if we are currently trying to get a location and the alarm manager has called this again,
-        // no need to start processing a new location.
-        if (!currentlyProcessingLocation) {
-            startTracking();
-            Log.e(TAG, "hasil berada di onStartCommand Tanpa cekFalse currentlyProcessingLocation " + currentlyProcessingLocation);
-        }
-        /*else {
-
-            if(cekFalse==40) {
-                currentlyProcessingLocation = false;
-                cekFalse = 0;
-            }
-
-            cekFalse = (cekFalse+1);
-
-            Log.e(TAG, "hasil berada di onStartCommand cekFalse "+cekFalse+" currentlyProcessingLocation "+currentlyProcessingLocation);
-
-        }*/
+        startTracking();
 
         return START_NOT_STICKY;
     }
@@ -83,8 +50,6 @@ public class LocationService extends Service implements
         Log.d(TAG, "startTracking");
 
         if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
-
-            currentlyProcessingLocation = true;
             googleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -94,41 +59,10 @@ public class LocationService extends Service implements
             if (!googleApiClient.isConnected() || !googleApiClient.isConnecting()) {
                 googleApiClient.connect();
             }
-        } else {
-            currentlyProcessingLocation = false;
-            Log.e(TAG, "startTracking " + currentlyProcessingLocation);
         }
-        Log.e(TAG, "startTracking " + currentlyProcessingLocation);
     }
 
     protected void sendLocationDataToWebsite(Location location) {
-//        Toast.makeText(this, location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
-
-        SharedPreferences sharedPreferences = this.getSharedPreferences("com.websmithing.gpstracker.prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        float totalDistanceInMeters = sharedPreferences.getFloat("totalDistanceInMeters", 0f);
-        boolean firstTimeGettingPosition = sharedPreferences.getBoolean("firstTimeGettingPosition", true);
-
-        if (firstTimeGettingPosition) {
-            editor.putBoolean("firstTimeGettingPosition", false);
-        } else {
-            Location previousLocation = new Location("");
-            previousLocation.setLatitude(sharedPreferences.getFloat("previousLatitude", 0f));
-            previousLocation.setLongitude(sharedPreferences.getFloat("previousLongitude", 0f));
-
-            float distance = location.distanceTo(previousLocation);
-            totalDistanceInMeters += distance;
-            editor.putFloat("totalDistanceInMeters", totalDistanceInMeters);
-        }
-
-        editor.putFloat("previousLatitude", (float) location.getLatitude());
-        editor.putFloat("previousLongitude", (float) location.getLongitude());
-        editor.apply();
-
-        Log.e(TAG, "Result First " + currentlyProcessingLocation);
-
-        Double speedInMilesPerHour = location.getSpeed() * 2.2369;
         String Alamat = Utils.getCompleteAddressString(this, location.getLatitude(), location.getLongitude());
         String log = "sessionManager " + sessionManager.getUsername() +
                 " Update " + Alamat + " Lat " + Double.toString(location.getLatitude())
@@ -141,8 +75,6 @@ public class LocationService extends Service implements
                     @Override
                     public void onSuccess(String message) {
                         Log.e("ServiceSendLocation", message);
-                        currentlyProcessingLocation = false;
-                        stopSelf();
                     }
 
                     @Override
@@ -152,7 +84,6 @@ public class LocationService extends Service implements
                 }
         );
 
-        Log.e(TAG, "Result Last " + currentlyProcessingLocation);
 
     }
 
@@ -174,16 +105,13 @@ public class LocationService extends Service implements
 
             if (sessionManager.isUserLoggedIn()) {
                 //if (location.getAccuracy() < 500.0f) {
-                currentlyProcessingLocation = true;
                 stopLocationUpdates();
                 sendLocationDataToWebsite(location);
                 Log.wtf(TAG, "onLocationChanged: " + "sessionManager " + sessionManager.getUsername() + " Update location ");
                 //}
             }
-        } else {
-            currentlyProcessingLocation = false;
         }
-        Log.e(TAG, "hasil berada di onLocationChanged currentlyProcessingLocation " + currentlyProcessingLocation);
+
     }
 
     private void stopLocationUpdates() {
@@ -204,32 +132,22 @@ public class LocationService extends Service implements
         locationRequest.setFastestInterval(1000); // the fastest rate in milliseconds at which your app can handle location updates
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    googleApiClient, locationRequest, this);
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                googleApiClient, locationRequest, this);
 
-        Log.e(TAG, "onConnected " + currentlyProcessingLocation);
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.e(TAG, "onConnectionFailed " + currentlyProcessingLocation);
         stopLocationUpdates();
         stopSelf();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.e(TAG, "onConnectionSuspended " + currentlyProcessingLocation);
+        Log.e(TAG, "onConnectionSuspended ");
     }
 }

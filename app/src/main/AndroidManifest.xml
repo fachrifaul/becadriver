@@ -66,20 +66,10 @@
         <service android:name=".service.GPSTracker"/>
         <service android:name=".service.LocationService"/>
 
-        <receiver android:name=".service.GpsTrackerBootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".service.GpsTrackerAlarmReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
-            </intent-filter>
-        </receiver>
+        <receiver
+            android:name=".service.GpsTrackerBootReceiver"
+            android:exported="true"/>
+
         <receiver
             android:name=".service.GcmBroadcastReceiver"
             android:authorities="id.web.go_cak.drivergocak"
@@ -96,17 +86,6 @@
         </receiver>
 
         <service android:name=".service.GcmIntentService"/>
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
-
-        <!-- <meta-data -->
-        <!-- android:name="com.google.android.maps.v2.API_KEY" -->
-        <!-- android:value="AIzaSyBRuQwOy4jhyc3Xq8mrVEBZgK32bXdeIx8"/> -->
-
-
-        <!-- <activity android:name=".samplelocation.MainActivity"/> -->
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

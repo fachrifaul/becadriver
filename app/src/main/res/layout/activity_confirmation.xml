@@ -130,29 +130,47 @@
 
 
                 <TextView
-                    android:id="@+id/lokasi"
+                    android:id="@+id/lokasi_asal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/alamat_lengkap_text_view"
-                    android:text="Lokasi"
+                    android:text="Lokasi Asal"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     />
 
                 <TextView
-                    android:id="@+id/lokasi_text_view"
+                    android:id="@+id/asal_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/lokasi"
+                    android:layout_below="@+id/lokasi_asal"
+                    android:layout_span="2"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    tools:text="Jl Setiabudi menuju Jl Mana (10km)"
+                    />
+                <TextView
+                    android:id="@+id/lokasi_tujuan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/asal_text_view"
+                    android:text="Lokasi Tujuan"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    />
+                <TextView
+                    android:id="@+id/tujuan_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lokasi_tujuan"
                     android:layout_span="2"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     tools:text="Jl Setiabudi menuju Jl Mana (10km)"
                     />
 
+
                 <TextView
                     android:id="@+id/jarak_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/lokasi_text_view"
+                    android:layout_below="@+id/tujuan_text_view"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     tools:text="(10km)"
                     />
