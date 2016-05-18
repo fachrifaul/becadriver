@@ -22,7 +22,6 @@ import id.web.go_cak.drivergocak.activity.TransaksiActivity;
 public class GcmIntentService extends IntentService{
 	private static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
-	private NotificationCompat.Builder builder;
 	private static final String TAG = "GCM Demo";
 
 	public GcmIntentService() {
@@ -62,10 +61,6 @@ public class GcmIntentService extends IntentService{
 	                    }
 	                }
 	                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-	                // Post notification of received message.
-	                //sendNotification("Received: " + extras.toString());
-				 	//String Kirim = extras.toString().replace("Bundle","message :").replace("=",":");
-	                //sendNotification(address);
 				 	sendNotification(msg);
 	                Log.i(TAG, "Dari GCM : "+msg+"Received: " + extras.toString());
 

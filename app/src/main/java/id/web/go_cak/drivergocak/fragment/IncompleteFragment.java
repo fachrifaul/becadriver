@@ -92,13 +92,13 @@ public class IncompleteFragment extends Fragment {
                 intent.putExtras(bundle);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
+                getActivity().finish();
 
             }
         });
 
         return view;
     }
-
 
     @Override
     public void onDestroyView() {

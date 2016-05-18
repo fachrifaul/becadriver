@@ -18,7 +18,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import id.web.go_cak.drivergocak.session.UserSession;
-import id.web.go_cak.drivergocak.utils.Utils;
 
 public class LocationService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
@@ -34,14 +33,16 @@ public class LocationService extends Service implements
     public void onCreate() {
         super.onCreate();
         sessionManager = new UserSession(this);
-        if (!sessionManager.isUserLoggedIn()) {
-            sessionManager.checkLogin();
-        }
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startTracking();
+        if (sessionManager.checkLogin()) {
+//            sessionManager.checkLogin();
+        }else {
+            startTracking();
+        }
 
         return START_NOT_STICKY;
     }
@@ -63,11 +64,11 @@ public class LocationService extends Service implements
     }
 
     protected void sendLocationDataToWebsite(Location location) {
-        String Alamat = Utils.getCompleteAddressString(this, location.getLatitude(), location.getLongitude());
-        String log = "sessionManager " + sessionManager.getUsername() +
-                " Update " + Alamat + " Lat " + Double.toString(location.getLatitude())
-                + " Long " + Double.toString(location.getLongitude());
-        Log.wtf(TAG, "sendLocationDataToWebsite: " + log);
+//        String Alamat = Utils.getCompleteAddressString(this, location.getLatitude(), location.getLongitude());
+//        String log = "sessionManager " + sessionManager.getUsername() +
+//                " Update " + Alamat + " Lat " + Double.toString(location.getLatitude())
+//                + " Long " + Double.toString(location.getLongitude());
+//        Log.wtf(TAG, "sendLocationDataToWebsite: " + log);
 
         new ServiceSendLocation(this).fetchService(sessionManager.getIdUser(), String.valueOf(location.getLatitude()),
                 String.valueOf(location.getLongitude()),

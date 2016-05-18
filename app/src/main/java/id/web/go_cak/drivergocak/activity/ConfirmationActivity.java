@@ -1,12 +1,10 @@
 package id.web.go_cak.drivergocak.activity;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -69,7 +67,6 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     private int confirmation = 0;
     private Bundle bundle;
     private Transaksi transaksi;
-    private ProgressDialog progressDialog;
     protected GoogleMap map;
     private LatLng starD = new LatLng(-6.910569499999999, 107.6497351);
     private LatLng endD = new LatLng(-6.928624799999999, 107.73401319999999);
@@ -77,8 +74,9 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     protected GoogleApiClient mGoogleApiClient;
     private List<Polyline> polylines;
 
-    private String idTransaksi, messageConfirmation;
-    public String userName, nama, latTujuan, longTujuan, latJemput, longJemput, distance, alamatLengkap, ongkos, driverkonfirmasi;
+    private String idTransaksi;
+    public String userName, nama, latTujuan, longTujuan, latJemput, longJemput, distance,
+            alamatLengkap, ongkos, driverkonfirmasi, alamatJemput, alamatTujuan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +90,6 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         bundle = getIntent().getExtras();
         transaksi = (Transaksi) bundle.getSerializable("TRANSAKSI");
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading ....");
-        progressDialog.show();
 
         initView();
     }
@@ -104,8 +98,10 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         idTransaksi = transaksi.getID();
         userName = transaksi.getUserName();
         nama = transaksi.getNama();
+        alamatTujuan = transaksi.getAlamatto();
         latTujuan = transaksi.getLatTujuan();
         longTujuan = transaksi.getLongTujuan();
+        alamatJemput = transaksi.getAlamatfrom();
         latJemput = transaksi.getLatJemput();
         longJemput = transaksi.getLongJemput();
         distance = transaksi.getDistance();
@@ -117,6 +113,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         alamatLengkapTextView.setText(alamatLengkap);
         namaPelangganTextView.setText(nama);
         ongkosTextView.setText(ongkos);
+        lokasiAsalTextView.setText(alamatJemput);
+        lokasiTujuanTextView.setText(alamatTujuan);
 
         polylines = new ArrayList<>();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -200,8 +198,6 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         } else {
             Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
-
-        new AddressBackground().execute();
     }
 
     private void Process() {
@@ -337,6 +333,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
     @Override
     public boolean onSupportNavigateUp() {
+        Intent sendIntent = new Intent(ConfirmationActivity.this, TransaksiActivity.class);
+        startActivity(sendIntent);
         finish();
         overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
         return true;
@@ -346,38 +344,10 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Intent sendIntent = new Intent(ConfirmationActivity.this, TransaksiActivity.class);
+        startActivity(sendIntent);
         finish();
         overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
-    }
-
-    public class AddressBackground extends AsyncTask<String, String, String> {
-        String detailFrom, detailTo;
-
-        @Override
-        protected String doInBackground(String... arg0) {
-            detailFrom = Utils.getCompleteAddressString(ConfirmationActivity.this,
-                    Double.parseDouble(latJemput), Double.parseDouble(longJemput));
-            detailTo = Utils.getCompleteAddressString(ConfirmationActivity.this,
-                    Double.parseDouble(latTujuan), Double.parseDouble(longTujuan));
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            Log.wtf("AddressBackground", "onPostExecute: "+detailFrom );
-
-            if(detailFrom.equals("") || detailTo.equals("")){
-                new AddressBackground().execute();
-            }else {
-                lokasiAsalTextView.setText(detailFrom);
-                lokasiTujuanTextView.setText(detailTo);
-                progressDialog.dismiss();
-            }
-
-
-        }
     }
 
 }

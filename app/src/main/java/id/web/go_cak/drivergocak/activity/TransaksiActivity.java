@@ -10,7 +10,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.adapter.TabAdapter;
-import id.web.go_cak.drivergocak.utils.Utils;
 
 public class TransaksiActivity extends AppCompatActivity {
 
@@ -28,11 +27,8 @@ public class TransaksiActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         viewPager.setAdapter(new TabAdapter(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
-
-        Utils.startAlarmManager(this);
 
     }
 
@@ -49,6 +45,10 @@ public class TransaksiActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
         overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
+    }
+
+    public void getThisIntent(){
+        startActivity(getIntent());
     }
 
 }

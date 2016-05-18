@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DaftarTransaksi {
     @SerializedName("transaksi")
-    public List<Transaksi> transaksi = new ArrayList<>();
+    public List<Transaksi> transaksi = new ArrayList<Transaksi>();
     @SerializedName("success")
     public Integer success;
 

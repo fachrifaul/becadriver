@@ -1,6 +1,7 @@
 package id.web.go_cak.drivergocak.service;
 
 import android.content.Context;
+import android.util.Log;
 
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.model.DaftarTransaksi;
@@ -43,6 +44,9 @@ public class ServiceTransaction {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        Log.wtf("ServiceTransaction", "fetchService: " + driverID);
+        Log.wtf("ServiceTransaction", "type: " + type);
+
         TransactionIncompleteUrl service = retrofit.create(TransactionIncompleteUrl.class);
 
         Call<DaftarTransaksi> listCall = service.getTransactionIncomplete(driverID);
@@ -56,10 +60,8 @@ public class ServiceTransaction {
             @Override
             public void onResponse(Call<DaftarTransaksi> call,
                                    Response<DaftarTransaksi> response) {
-
                 if (response.isSuccessful()) {
                     DaftarTransaksi daftarTransaksi = response.body();
-
                     if (daftarTransaksi.success == 1) {
                         callback.onSuccess(daftarTransaksi);
                     } else {
@@ -73,7 +75,7 @@ public class ServiceTransaction {
             @Override
             public void onFailure(Call<DaftarTransaksi> call,
                                   Throwable t) {
-                callback.onFailure(context.getString(R.string.koneksi_bermasalah));
+                callback.onFailure(t.getMessage());
             }
         });
     }

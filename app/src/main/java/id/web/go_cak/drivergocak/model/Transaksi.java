@@ -4,49 +4,76 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Transaksi implements Serializable{
+public class Transaksi implements Serializable {
 
     @SerializedName("ID")
+    
     public String ID;
     @SerializedName("userName")
+    
     public String userName;
     @SerializedName("distance")
+    
     public String distance;
     @SerializedName("driver")
+    
     public String driver;
     @SerializedName("drivername")
+    
     public String drivername;
     @SerializedName("driverkonfirmasi")
+    
     public String driverkonfirmasi;
     @SerializedName("driverdone")
+    
     public String driverdone;
     @SerializedName("jarak")
+    
     public String jarak;
     @SerializedName("lastUpdate")
+    
     public String lastUpdate;
     @SerializedName("ongkos")
+    
     public String ongkos;
     @SerializedName("LatJemput")
+    
     public String LatJemput;
     @SerializedName("LongJemput")
+    
     public String LongJemput;
     @SerializedName("LatTujuan")
+    
     public String LatTujuan;
     @SerializedName("LongTujuan")
+    
     public String LongTujuan;
     @SerializedName("AlamatLengkap")
+    
     public String AlamatLengkap;
     @SerializedName("PenyewaID")
+    
     public String PenyewaID;
+    @SerializedName("alamatfrom")
+    
+    public String alamatfrom;
+    @SerializedName("alamatto")
+    
+    public String alamatto;
     @SerializedName("nama")
+    
     public String nama;
     @SerializedName("telp")
+    
     public String telp;
     @SerializedName("email")
+    
     public String email;
     @SerializedName("code")
+    
     public String code;
     @SerializedName("result")
+    
     public String result;
 
     public String getID() {
@@ -111,6 +138,14 @@ public class Transaksi implements Serializable{
 
     public String getPenyewaID() {
         return PenyewaID;
+    }
+
+    public String getAlamatfrom() {
+        return alamatfrom;
+    }
+
+    public String getAlamatto() {
+        return alamatto;
     }
 
     public String getNama() {
