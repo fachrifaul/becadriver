@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.avatar_imageview) CircleImageView avatarImageview;
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
+    @Bind(R.id.version_text_view) TextView versionTextView;
 
     private UserSession userSession;
     private RegisterIdSession registerIdSession;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
             ButterKnife.bind(this);
             setSupportActionBar(toolbar);
+            versionApp();
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -205,40 +208,6 @@ public class MainActivity extends AppCompatActivity {
         }, 3000);
     }
 
-//    public class RegisterGCMBackground extends AsyncTask<String, String, String> {
-//
-//        @Override
-//        protected String doInBackground(String... arg0) {
-//            try {
-//                if (gcm == null) {
-//                    gcm = GoogleCloudMessaging.getInstance(context);
-//                }
-//                regIdUser = gcm.register("670832882424");
-//                Log.wtf(TAG, "Device registered, registration ID=" + regIdUser);
-//                new ServiceRegisterGCM(MainActivity.this).fetchService(regIdUser, userSession.getIdUser(),
-//                        new ServiceRegisterGCM.RegisterGcmCallBack() {
-//                            @Override
-//                            public void onSuccess(String message) {
-//                                Log.wtf(TAG, "onSuccess: " + message);
-//                            }
-//
-//                            @Override
-//                            public void onFailure(String message) {
-//                                Log.wtf(TAG, "onFailure: " + message);
-//                            }
-//                        });
-//
-//                // Persist the regID - no need to register again.
-//                registerIdSession.storeRegistrationId(regIdUser);
-//            } catch (IOException ex) {
-//                Log.wtf(TAG, ex.getMessage());
-//            }
-//            return null;
-//        }
-//
-//    }
-
-
     @Override
     public void onBackPressed() {
         Toast.makeText(getApplicationContext(), "Tekan tombol home untuk keluar", Toast.LENGTH_LONG).show();
@@ -268,5 +237,19 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
         }
+    }
+
+    private void versionApp(){
+        StringBuilder appNameStringBuilder = new StringBuilder();
+        appNameStringBuilder.append(getString(R.string.app_name));
+        appNameStringBuilder.append(" ");
+        appNameStringBuilder.append("v");
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            appNameStringBuilder.append(packageInfo.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        versionTextView.setText(appNameStringBuilder.toString());
     }
 }
