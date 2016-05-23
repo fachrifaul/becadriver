@@ -5,8 +5,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,13 +23,9 @@ import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -48,8 +46,8 @@ import id.web.go_cak.drivergocak.model.Transaksi;
 import id.web.go_cak.drivergocak.service.ServiceProcess;
 import id.web.go_cak.drivergocak.utils.Utils;
 
-public class ConfirmationActivity extends AppCompatActivity implements RoutingListener,
-        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class ConfirmationActivity extends AppCompatActivity implements RoutingListener,OnMapReadyCallback {
+
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.nama_pelanggan_text_view) TextView namaPelangganTextView;
     @Bind(R.id.no_telp_text_view) TextView noTelpTextView;
@@ -64,15 +62,17 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     @Bind(R.id.progressbar) ProgressBar progressbar;
     @Bind(R.id.button_layout) View buttonLayout;
 
+    private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
+    private static final int PERMISSIONS_REQUEST_PHONE_CALL = 100;
+    private boolean mPermissionDenied = false;
+    private static final String TAG ="ConfirmationActivity" ;
     private int confirmation = 0;
     private Bundle bundle;
     private Transaksi transaksi;
     protected GoogleMap map;
     private LatLng starD = new LatLng(-6.910569499999999, 107.6497351);
     private LatLng endD = new LatLng(-6.928624799999999, 107.73401319999999);
-    private static final String LOG_TAG = "MyActivity";
-    protected GoogleApiClient mGoogleApiClient;
-    private List<Polyline> polylines;
+    private List<Polyline> polylines = new ArrayList<>();
 
     private String idTransaksi;
     public String userName, nama, latTujuan, longTujuan, latJemput, longJemput, distance,
@@ -116,22 +116,9 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         lokasiAsalTextView.setText(alamatJemput);
         lokasiTujuanTextView.setText(alamatTujuan);
 
-        polylines = new ArrayList<>();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        MapsInitializer.initialize(this);
-        mGoogleApiClient.connect();
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
-        }
-        map = mapFragment.getMap();
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         showData();
 
@@ -177,18 +164,27 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     }
 
     @OnClick(R.id.callButton)
-    public void setOnclickCall() {
-        try {
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + noTelpTextView.getText().toString()));
-            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                return;
+    public void setOnclickCallButton() {
+        setOnclickCall();
+    }
+
+    private void setOnclickCall() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, PERMISSIONS_REQUEST_PHONE_CALL);
+        } else {
+            //Open call function
+            try {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + noTelpTextView.getText().toString()));
+                callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(callIntent);
+            } catch (ActivityNotFoundException activityException) {
+                Log.e(TAG, "Call failed");
+                Toast.makeText(this, "Panggilan Tidak Bisa dilakukan", Toast.LENGTH_SHORT).show();
             }
-            startActivity(callIntent);
-        } catch (ActivityNotFoundException activityException) {
-            Log.e("helloandroid dialing ", "Call failed");
-            Toast.makeText(getApplicationContext(), "Panggilan Tidak Bisa dilakukan", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -266,10 +262,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        CameraUpdate center = CameraUpdateFactory.newLatLng(starD);
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
-        map.moveCamera(center);
-        map.animateCamera(zoom);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(starD.latitude, starD.longitude), 14));
 
         if (polylines.size() > 0) {
             for (Polyline poly : polylines) {
@@ -314,21 +307,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
     @Override
     public void onRoutingCancelled() {
-        Log.i(LOG_TAG, "Routing was cancelled.");
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.v(LOG_TAG, connectionResult.toString());
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
+        Log.i(TAG, "Routing was cancelled.");
     }
 
     @Override
@@ -350,4 +329,49 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         overridePendingTransition(R.anim.do_nothing, R.anim.do_nothing);
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map=googleMap;
+        map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                return false;
+            }
+        });
+        enableMyLocation();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_ACCESS_COARSE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // All good!
+                    enableMyLocation();
+                } else {
+                    mPermissionDenied = true;
+                }
+                break;
+            case PERMISSIONS_REQUEST_PHONE_CALL:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted
+                    setOnclickCall();
+                } else {
+                    Toast.makeText(this, "Sorry!!! Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_ACCESS_COARSE_LOCATION);
+        } else if (map != null) {
+            // Access to the location has been granted to the app.
+            map.setMyLocationEnabled(true);
+        }
+    }
 }

@@ -10,4 +10,16 @@
         android:layout_height="match_parent"
         />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_transaction_text_view"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:drawablePadding="@dimen/activity_vertical_margin"
+        android:gravity="center"
+        android:text="@string/tidak_ada_transaksi"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+
 </RelativeLayout>

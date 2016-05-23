@@ -7,9 +7,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -23,10 +23,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,9 +37,7 @@ import id.web.go_cak.drivergocak.service.GPSTracker;
 import id.web.go_cak.drivergocak.service.GpsTrackerBootReceiver;
 import id.web.go_cak.drivergocak.service.ServiceLogout;
 import id.web.go_cak.drivergocak.service.ServiceRegisterGCM;
-import id.web.go_cak.drivergocak.session.RegisterGcmSession;
 import id.web.go_cak.drivergocak.session.RegisterIdSession;
-import id.web.go_cak.drivergocak.session.SiklulasiSession;
 import id.web.go_cak.drivergocak.session.UserSession;
 import id.web.go_cak.drivergocak.utils.ApiConstant;
 import id.web.go_cak.drivergocak.utils.DividerItemDecoration;
@@ -58,11 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private UserSession userSession;
     private RegisterIdSession registerIdSession;
     private ProgressDialog loading;
-    private GoogleCloudMessaging gcm;
 
     private Context context;
     private String regIdUser;
-    private static final String TAG = "GCMDemo";
+    private static final String TAG = "MainActivity";
     private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
 
     public MainActivity() {
@@ -138,27 +133,22 @@ public class MainActivity extends AppCompatActivity {
             //cek GCM
             registerIdSession = new RegisterIdSession(this);
 
-            RegisterGcmSession registerGcmSession = new RegisterGcmSession(this);
-            if (!registerGcmSession.checkRegsitered()) {
-                context = getApplicationContext();
-                if (Utils.checkPlayServices(this)) {
-                    gcm = GoogleCloudMessaging.getInstance(this);
-                    if (registerGcmSession.checkRegsitered()) {
-                        regIdUser = registerIdSession.getRegistrationId();
-                        if (regIdUser.isEmpty()) {
-                            new RegisterGCMBackground().execute();
-                        }
-                    } else {
-                        new RegisterGCMBackground().execute();
-                    }
-                }
-            }
+//            RegisterGcmSession registerGcmSession = new RegisterGcmSession(this);
+//            if (!registerGcmSession.checkRegsitered()) {
+//                context = getApplicationContext();
+//                if (Utils.checkPlayServices(this)) {
+//                    if (registerGcmSession.checkRegsitered()) {
+//                        regIdUser = registerIdSession.getRegistrationId();
+//                        if (regIdUser.isEmpty()) {
+//                            registerGCM();
+//                        }
+//                    } else {
+//                        registerGCM();
+//                    }
+//                }
+//            }
 
-            SiklulasiSession sirkulasiSession = new SiklulasiSession(this);
-            if (sirkulasiSession.isCurrentlyProc()) {
-                Log.wtf(TAG, "onCreate: " + "GPS LAT " + sirkulasiSession.getlats() + " LONG " + sirkulasiSession.getlongs());
-            }
-
+            registerGCM();
         }
     }
 
@@ -191,16 +181,14 @@ public class MainActivity extends AppCompatActivity {
         Utils.checkPlayServices(this);
     }
 
-    public class RegisterGCMBackground extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... arg0) {
-            try {
-                if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(context);
-                }
-                regIdUser = gcm.register("670832882424");
-                Log.wtf(TAG, "Device registered, registration ID=" + regIdUser);
+    private void registerGCM(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                regIdUser = FirebaseInstanceId.getInstance().getToken();
+                Log.wtf(TAG, "FCM ID : " + regIdUser);
+                registerIdSession.storeRegistrationId(regIdUser);
                 new ServiceRegisterGCM(MainActivity.this).fetchService(regIdUser, userSession.getIdUser(),
                         new ServiceRegisterGCM.RegisterGcmCallBack() {
                             @Override
@@ -213,16 +201,42 @@ public class MainActivity extends AppCompatActivity {
                                 Log.wtf(TAG, "onFailure: " + message);
                             }
                         });
-
-                // Persist the regID - no need to register again.
-                registerIdSession.storeRegistrationId(regIdUser);
-            } catch (IOException ex) {
-                Log.wtf(TAG, ex.getMessage());
             }
-            return null;
-        }
-
+        }, 3000);
     }
+
+//    public class RegisterGCMBackground extends AsyncTask<String, String, String> {
+//
+//        @Override
+//        protected String doInBackground(String... arg0) {
+//            try {
+//                if (gcm == null) {
+//                    gcm = GoogleCloudMessaging.getInstance(context);
+//                }
+//                regIdUser = gcm.register("670832882424");
+//                Log.wtf(TAG, "Device registered, registration ID=" + regIdUser);
+//                new ServiceRegisterGCM(MainActivity.this).fetchService(regIdUser, userSession.getIdUser(),
+//                        new ServiceRegisterGCM.RegisterGcmCallBack() {
+//                            @Override
+//                            public void onSuccess(String message) {
+//                                Log.wtf(TAG, "onSuccess: " + message);
+//                            }
+//
+//                            @Override
+//                            public void onFailure(String message) {
+//                                Log.wtf(TAG, "onFailure: " + message);
+//                            }
+//                        });
+//
+//                // Persist the regID - no need to register again.
+//                registerIdSession.storeRegistrationId(regIdUser);
+//            } catch (IOException ex) {
+//                Log.wtf(TAG, ex.getMessage());
+//            }
+//            return null;
+//        }
+//
+//    }
 
 
     @Override

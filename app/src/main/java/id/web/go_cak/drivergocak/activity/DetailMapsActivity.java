@@ -1,6 +1,10 @@
 package id.web.go_cak.drivergocak.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -11,13 +15,9 @@ import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,16 +34,18 @@ import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.model.Transaksi;
 import id.web.go_cak.drivergocak.utils.Utils;
 
-public class DetailMapsActivity extends AppCompatActivity  implements RoutingListener,
-        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class DetailMapsActivity extends AppCompatActivity  implements RoutingListener,OnMapReadyCallback {
     @Bind(R.id.toolbar) Toolbar toolbar;
+
+    private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
+    private static final int PERMISSIONS_REQUEST_PHONE_CALL = 100;
+    private boolean mPermissionDenied = false;
 
     protected GoogleMap map;
     private LatLng starD = new LatLng(-6.910569499999999, 107.6497351);
     private LatLng endD = new LatLng(-6.928624799999999, 107.73401319999999);
     private static final String LOG_TAG = "DetailMapsActivity";
-    protected GoogleApiClient mGoogleApiClient;
-    private List<Polyline> polylines;
+    private List<Polyline> polylines = new ArrayList<>();
     private Bundle bundle;
     private Transaksi transaksi;
 
@@ -59,22 +61,9 @@ public class DetailMapsActivity extends AppCompatActivity  implements RoutingLis
         bundle = getIntent().getExtras();
         transaksi = (Transaksi) bundle.getSerializable("TRANSAKSI");
 
-        polylines = new ArrayList<>();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        MapsInitializer.initialize(this);
-        mGoogleApiClient.connect();
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
-        }
-        map = mapFragment.getMap();
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         if (Utils.Operations.isOnline(this)) {
             route();
@@ -129,10 +118,7 @@ public class DetailMapsActivity extends AppCompatActivity  implements RoutingLis
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        CameraUpdate center = CameraUpdateFactory.newLatLng(starD);
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
-        map.moveCamera(center);
-        map.animateCamera(zoom);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(starD.latitude, starD.longitude), 14));
 
         if (polylines.size() > 0) {
             for (Polyline poly : polylines) {
@@ -181,16 +167,40 @@ public class DetailMapsActivity extends AppCompatActivity  implements RoutingLis
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.v(LOG_TAG, connectionResult.toString());
+    public void onMapReady(GoogleMap googleMap) {
+        map=googleMap;
+        map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                return false;
+            }
+        });
+        enableMyLocation();
     }
 
     @Override
-    public void onConnected(Bundle bundle) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_ACCESS_COARSE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // All good!
+                    enableMyLocation();
+                } else {
+                    mPermissionDenied = true;
+                }
+                break;
+        }
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_ACCESS_COARSE_LOCATION);
+        } else if (map != null) {
+            // Access to the location has been granted to the app.
+            map.setMyLocationEnabled(true);
+        }
     }
 }

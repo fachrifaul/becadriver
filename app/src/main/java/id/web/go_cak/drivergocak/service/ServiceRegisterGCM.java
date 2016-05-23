@@ -1,6 +1,7 @@
 package id.web.go_cak.drivergocak.service;
 
 import android.content.Context;
+import android.util.Log;
 
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.utils.ApiConstant;
@@ -30,6 +31,7 @@ public class ServiceRegisterGCM {
     }
 
     private Context context;
+    public static final String TAG = "ServiceRegisterGCM";
 
     public ServiceRegisterGCM(Context context) {
         this.context = context;
@@ -44,8 +46,11 @@ public class ServiceRegisterGCM {
         RegisterGcmUrl service = retrofit.create(RegisterGcmUrl.class);
         Call<String> listCall = service.registerGcm(regId, id);
         listCall.enqueue(new Callback<String>() {
+
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                Log.wtf(TAG, "onResponse: " + response.message());
+                Log.wtf(TAG, "onResponse: " + response.body());
                 if (response.isSuccessful()) {
                     callback.onSuccess(response.body());
                 } else {

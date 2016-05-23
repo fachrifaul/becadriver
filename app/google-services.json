@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "160410739378",
+    "firebase_url": "https://drivergocak.firebaseio.com",
+    "project_id": "drivergocak",
+    "storage_bucket": "drivergocak.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160410739378:android:a6d6e6bce4e289b8",
+        "android_client_info": {
+          "package_name": "id.web.go_cak.drivergocak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "160410739378-mvfuhv8am78pvvafg74gf6iijhais4oo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3_O4vQqOpkvSKThfAUL9d7xjh3v-Wlyg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

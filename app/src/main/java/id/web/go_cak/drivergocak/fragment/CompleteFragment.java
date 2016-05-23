@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,7 @@ import id.web.go_cak.drivergocak.utils.DividerItemDecoration;
 
 public class CompleteFragment extends Fragment {
     @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
+    @Bind(R.id.no_transaction_text_view) TextView noTransactionTextView;
 
     private List<Transaksi> transaksiList = new ArrayList<>();
     private TransactionAdapter adapter;
@@ -76,7 +77,7 @@ public class CompleteFragment extends Fragment {
                     public void onFailure(String message) {
                         if (pDialog.isShowing())
                             pDialog.dismiss();
-                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                        noTransactionTextView.setVisibility(View.VISIBLE);
                     }
                 });
 
