@@ -85,6 +85,14 @@ public class MainActivity extends AppCompatActivity {
                         PERMISSION_ACCESS_COARSE_LOCATION);
             }
 
+//            versionTextView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Toast.makeText(MainActivity.this, "Lokasi Akurat", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+
+
             Picasso.with(this).load(ApiConstant.IMAGE_URL + userSession.getFoto()).error(R.drawable.ic_avatar).into(avatarImageview);
             usernameTextview.setText(userSession.getUsername());
             phoneTextview.setText(userSession.getTelp());
@@ -129,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                 am.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), sender);
             } else {
-                am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),120000, sender);
+                am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),60000, sender);
             }
 
 

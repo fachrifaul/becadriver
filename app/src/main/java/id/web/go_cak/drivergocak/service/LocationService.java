@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -40,7 +41,7 @@ public class LocationService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (sessionManager.checkLogin()) {
 //            sessionManager.checkLogin();
-        }else {
+        } else {
             startTracking();
         }
 
@@ -75,17 +76,16 @@ public class LocationService extends Service implements
                 new ServiceSendLocation.CallBack() {
                     @Override
                     public void onSuccess(String message) {
-                        Log.e("ServiceSendLocation", message);
+                        Log.e("ServiceSendLocation", ": " + message);
+                        Toast.makeText(LocationService.this, "Lokasi Akurat", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(String message) {
-                        Log.e("ServiceSendLocation", message);
+                        Log.e("ServiceSendLocation", "failed: " + message);
                     }
                 }
         );
-
-
     }
 
     @Override

@@ -1,10 +1,12 @@
 package id.web.go_cak.drivergocak.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -28,6 +30,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -46,7 +49,7 @@ import id.web.go_cak.drivergocak.model.Transaksi;
 import id.web.go_cak.drivergocak.service.ServiceProcess;
 import id.web.go_cak.drivergocak.utils.Utils;
 
-public class ConfirmationActivity extends AppCompatActivity implements RoutingListener,OnMapReadyCallback {
+public class ConfirmationActivity extends AppCompatActivity implements RoutingListener, OnMapReadyCallback {
 
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.nama_pelanggan_text_view) TextView namaPelangganTextView;
@@ -65,7 +68,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_PHONE_CALL = 100;
     private boolean mPermissionDenied = false;
-    private static final String TAG ="ConfirmationActivity" ;
+    private static final String TAG = "ConfirmationActivity";
     private int confirmation = 0;
     private Bundle bundle;
     private Transaksi transaksi;
@@ -73,6 +76,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     private LatLng starD = new LatLng(-6.910569499999999, 107.6497351);
     private LatLng endD = new LatLng(-6.928624799999999, 107.73401319999999);
     private List<Polyline> polylines = new ArrayList<>();
+    private ProgressDialog progressDialog;
 
     private String idTransaksi;
     public String userName, nama, latTujuan, longTujuan, latJemput, longJemput, distance,
@@ -90,6 +94,10 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         bundle = getIntent().getExtras();
         transaksi = (Transaksi) bundle.getSerializable("TRANSAKSI");
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading ....");
+        progressDialog.show();
 
         initView();
     }
@@ -113,8 +121,15 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         alamatLengkapTextView.setText(alamatLengkap);
         namaPelangganTextView.setText(nama);
         ongkosTextView.setText(ongkos);
-        lokasiAsalTextView.setText(alamatJemput);
-        lokasiTujuanTextView.setText(alamatTujuan);
+
+        if (alamatJemput != null && alamatTujuan != null) {
+            progressDialog.dismiss();
+            lokasiAsalTextView.setText(alamatJemput);
+            lokasiTujuanTextView.setText(alamatTujuan);
+        } else {
+            new AddressBackground().execute();
+        }
+
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -262,7 +277,11 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(starD.latitude, starD.longitude), 14));
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(midPoint(starD.latitude, starD.longitude, endD.latitude, endD.longitude))
+                .zoom(12)
+                .build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         if (polylines.size() > 0) {
             for (Polyline poly : polylines) {
@@ -331,7 +350,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        map=googleMap;
+        map = googleMap;
         map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
@@ -372,6 +391,38 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         } else if (map != null) {
             // Access to the location has been granted to the app.
             map.setMyLocationEnabled(true);
+        }
+    }
+
+    private LatLng midPoint(double lat1, double long1, double lat2, double long2) {
+        return new LatLng((lat1 + lat2) / 2, (long1 + long2) / 2);
+    }
+
+    public class AddressBackground extends AsyncTask<String, String, String> {
+        String detailFrom, detailTo;
+
+        @Override
+        protected String doInBackground(String... arg0) {
+            detailFrom = Utils.getCompleteAddressString(ConfirmationActivity.this,
+                    Double.parseDouble(latJemput), Double.parseDouble(longJemput));
+            detailTo = Utils.getCompleteAddressString(ConfirmationActivity.this,
+                    Double.parseDouble(latTujuan), Double.parseDouble(longTujuan));
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.wtf("AddressBackground", "onPostExecute: " + detailFrom);
+
+            if (detailFrom.equals("") || detailTo.equals("")) {
+                new AddressBackground().execute();
+            } else {
+                lokasiAsalTextView.setText(detailFrom);
+                lokasiTujuanTextView.setText(detailTo);
+                progressDialog.dismiss();
+            }
         }
     }
 }
