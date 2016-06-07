@@ -22,6 +22,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.greenrobot.eventbus.EventBus;
+
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.activity.MainActivity;
 import id.web.go_cak.drivergocak.session.UserSession;
@@ -37,7 +39,7 @@ public class GPSTracker extends Service {
     private GoogleApiClient googleApiClient;
     private boolean started = false;
 
-    public GPSTracker() {
+    public GPSTracker(){
 
     }
 
@@ -74,7 +76,6 @@ public class GPSTracker extends Service {
         }
         stopSelf();
     }
-
 
     public void startLocationUpdate() {
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -126,6 +127,7 @@ public class GPSTracker extends Service {
                 sendLocationDataToWebsite(location);
             } else {
                 Log.d(TAG, "onLocationChanged : null");
+                EventBus.getDefault().post(new GpsEvent());
             }
         }
     };
@@ -152,6 +154,7 @@ public class GPSTracker extends Service {
     public IBinder onBind(Intent arg0) {
         return null;
     }
+
 
     public void showNotification() {
         Intent intent = new Intent(this, MainActivity.class);

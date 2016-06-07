@@ -1,6 +1,5 @@
 package id.web.go_cak.drivergocak.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -8,8 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -23,20 +20,6 @@ public class Utils {
 
     public static LatLng midPoint(double lat1, double long1, double lat2, double long2) {
         return new LatLng((lat1 + lat2) / 2, (long1 + long2) / 2);
-    }
-
-    public static boolean checkPlayServices(Activity activity) {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, activity, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Log.i("PLAY_SERVICES", "This device is not supported.");
-                activity.finish();
-            }
-            return false;
-        }
-        return true;
     }
 
     public static String getCompleteAddressString(Context context, double LATITUDE, double LONGITUDE) {

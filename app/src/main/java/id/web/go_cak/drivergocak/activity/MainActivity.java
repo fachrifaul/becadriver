@@ -26,6 +26,9 @@ import android.widget.Toast;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,9 +37,9 @@ import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.adapter.MainAdapter;
 import id.web.go_cak.drivergocak.model.Dashboard;
 import id.web.go_cak.drivergocak.service.GPSTracker;
+import id.web.go_cak.drivergocak.service.GpsEvent;
 import id.web.go_cak.drivergocak.service.ServiceLogout;
 import id.web.go_cak.drivergocak.service.ServiceRegisterGCM;
-import id.web.go_cak.drivergocak.session.RegisterIdSession;
 import id.web.go_cak.drivergocak.session.UserSession;
 import id.web.go_cak.drivergocak.utils.ApiConstant;
 import id.web.go_cak.drivergocak.utils.DividerItemDecoration;
@@ -51,10 +54,9 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.version_text_view) TextView versionTextView;
 
     private UserSession userSession;
-    private RegisterIdSession registerIdSession;
     private ProgressDialog loading;
 
-    private String regIdUser;
+    private String myToken;
     private static final String TAG = "MainActivity";
     private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
 
@@ -65,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerIdSession = new RegisterIdSession(this);
         userSession = new UserSession(this);
         if (userSession.checkLogin()) {
             redirectLogin();
@@ -123,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSION_ACCESS_COARSE_LOCATION);
         } else {
+            Log.d(TAG, "onStart: " + isLocationEnabled());
             if (!isLocationEnabled()) {
                 showEnableLocationDialog();
             } else {
@@ -130,9 +132,26 @@ public class MainActivity extends AppCompatActivity {
                 startService(new Intent(this, GPSTracker.class));
             }
         }
+        EventBus.getDefault().register(this);
     }
 
-    protected void showEnableLocationDialog() {
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onJobReceivedEvent(GpsEvent gpsEvent) {
+        showEnableLocationDialog();
+    }
+
+    protected boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    public void showEnableLocationDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setMessage("GPS harus diaktifkan. Silakan ke halaman pengaturan di perangkat untuk mengaktfikannya");
         alertDialog.setPositiveButton("Buka Halaman Pengaturan", new DialogInterface.OnClickListener() {
@@ -148,11 +167,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         alertDialog.show();
-    }
-
-    protected boolean isLocationEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     @OnClick(R.id.fab)
@@ -189,12 +203,10 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                regIdUser = FirebaseInstanceId.getInstance().getToken();
-                if (regIdUser != null) {
-
-                    Log.d(TAG, "FCM ID : " + regIdUser);
-                    registerIdSession.storeRegistrationId(regIdUser);
-                    new ServiceRegisterGCM(MainActivity.this).fetchService(regIdUser, userSession.getIdUser(),
+                myToken = FirebaseInstanceId.getInstance().getToken();
+                if (myToken != null) {
+                    Log.d(TAG, "FCM ID : " + myToken);
+                    new ServiceRegisterGCM(MainActivity.this).fetchService(myToken, userSession.getIdUser(),
                             new ServiceRegisterGCM.RegisterGcmCallBack() {
                                 @Override
                                 public void onSuccess(String message) {
