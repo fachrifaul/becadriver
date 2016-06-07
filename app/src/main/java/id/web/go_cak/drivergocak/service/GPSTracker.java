@@ -26,6 +26,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.activity.MainActivity;
+import id.web.go_cak.drivergocak.event.GpsEvent;
 import id.web.go_cak.drivergocak.session.UserSession;
 
 public class GPSTracker extends Service {

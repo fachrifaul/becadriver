@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,9 +37,9 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.adapter.MainAdapter;
+import id.web.go_cak.drivergocak.event.GpsEvent;
 import id.web.go_cak.drivergocak.model.Dashboard;
 import id.web.go_cak.drivergocak.service.GPSTracker;
-import id.web.go_cak.drivergocak.service.GpsEvent;
 import id.web.go_cak.drivergocak.service.ServiceLogout;
 import id.web.go_cak.drivergocak.service.ServiceRegisterGCM;
 import id.web.go_cak.drivergocak.session.UserSession;
@@ -148,13 +150,43 @@ public class MainActivity extends AppCompatActivity {
 
     protected boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 6000, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    if (location != null) {
+                        Log.d(TAG, "location: " + location.getLatitude() + "," + location.getLongitude());
+                    } else {
+                        Log.d(TAG, "location: null");
+                        showEnableLocationDialog();
+                    }
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            });
+
+        }
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     public void showEnableLocationDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setMessage("GPS harus diaktifkan. Silakan ke halaman pengaturan di perangkat untuk mengaktfikannya");
-        alertDialog.setPositiveButton("Buka Halaman Pengaturan", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Buka Pengaturan", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
@@ -210,12 +242,12 @@ public class MainActivity extends AppCompatActivity {
                             new ServiceRegisterGCM.RegisterGcmCallBack() {
                                 @Override
                                 public void onSuccess(String message) {
-                                    Log.d(TAG, "onSuccess: " + message);
+                                    Log.d(TAG, "ServiceRegisterGCM onSuccess: " + message);
                                 }
 
                                 @Override
                                 public void onFailure(String message) {
-                                    Log.d(TAG, "onFailure: " + message);
+                                    Log.d(TAG, "ServiceRegisterGCM onFailure: " + message);
                                 }
                             });
                 } else {
