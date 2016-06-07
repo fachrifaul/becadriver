@@ -242,15 +242,15 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
             public void onFailure(String message) {
                 buttonLayout.setVisibility(View.VISIBLE);
                 progressbar.setVisibility(View.GONE);
-                Log.wtf("ServiceProcess", message);
+                Log.d("ServiceProcess", message);
             }
         });
     }
 
 
     public void route() {
-        /*Log.wtf("starD", "route: " + transaksi.getLatJemput() + ", " + Double.parseDouble(transaksi.getLongJemput()));
-        Log.wtf("endD", "route: " + transaksi.getLatTujuan() + ", " + Double.parseDouble(transaksi.getLongTujuan()));*/
+        /*Log.d("starD", "route: " + transaksi.getLatJemput() + ", " + Double.parseDouble(transaksi.getLongJemput()));
+        Log.d("endD", "route: " + transaksi.getLatTujuan() + ", " + Double.parseDouble(transaksi.getLongTujuan()));*/
 
         starD = new LatLng(Double.parseDouble(transaksi.getLatJemput()), Double.parseDouble(transaksi.getLongJemput()));
         endD = new LatLng(Double.parseDouble(transaksi.getLatTujuan()), Double.parseDouble(transaksi.getLongTujuan()));
@@ -278,7 +278,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(midPoint(starD.latitude, starD.longitude, endD.latitude, endD.longitude))
+                .target(Utils.midPoint(starD.latitude, starD.longitude, endD.latitude, endD.longitude))
                 .zoom(12)
                 .build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -394,10 +394,6 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         }
     }
 
-    private LatLng midPoint(double lat1, double long1, double lat2, double long2) {
-        return new LatLng((lat1 + lat2) / 2, (long1 + long2) / 2);
-    }
-
     public class AddressBackground extends AsyncTask<String, String, String> {
         String detailFrom, detailTo;
 
@@ -414,7 +410,7 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.wtf("AddressBackground", "onPostExecute: " + detailFrom);
+            Log.d("AddressBackground", "onPostExecute: " + detailFrom);
 
             if (detailFrom.equals("") || detailTo.equals("")) {
                 new AddressBackground().execute();

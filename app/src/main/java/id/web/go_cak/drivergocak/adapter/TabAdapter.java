@@ -8,7 +8,7 @@ import id.web.go_cak.drivergocak.fragment.CompleteFragment;
 import id.web.go_cak.drivergocak.fragment.IncompleteFragment;
 
 public class TabAdapter extends FragmentPagerAdapter {
-    private String tabTitles[] = new String[]{"INCOMPLETE", "COMPLETE"};
+    private String tabTitles[] = new String[]{"BARU", "LAMA"};
 
     public TabAdapter(FragmentManager fm) {
         super(fm);

@@ -20,6 +20,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -90,8 +91,8 @@ public class DetailMapsActivity extends AppCompatActivity  implements RoutingLis
     }
 
     public void route() {
-        /*Log.wtf("starD", "route: " + transaksi.getLatJemput() + ", " + Double.parseDouble(transaksi.getLongJemput()));
-        Log.wtf("endD", "route: " + transaksi.getLatTujuan() + ", " + Double.parseDouble(transaksi.getLongTujuan()));*/
+        /*Log.d("starD", "route: " + transaksi.getLatJemput() + ", " + Double.parseDouble(transaksi.getLongJemput()));
+        Log.d("endD", "route: " + transaksi.getLatTujuan() + ", " + Double.parseDouble(transaksi.getLongTujuan()));*/
 
         starD = new LatLng(Double.parseDouble(transaksi.getLatJemput()), Double.parseDouble(transaksi.getLongJemput()));
         endD = new LatLng(Double.parseDouble(transaksi.getLatTujuan()), Double.parseDouble(transaksi.getLongTujuan()));
@@ -118,7 +119,11 @@ public class DetailMapsActivity extends AppCompatActivity  implements RoutingLis
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(starD.latitude, starD.longitude), 14));
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(Utils.midPoint(starD.latitude, starD.longitude, endD.latitude, endD.longitude))
+                .zoom(12)
+                .build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         if (polylines.size() > 0) {
             for (Polyline poly : polylines) {

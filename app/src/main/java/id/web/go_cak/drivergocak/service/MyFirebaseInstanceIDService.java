@@ -53,7 +53,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      */
     private void sendRegistrationToServer(String token) {
         // Add custom implementation, as needed.
-//        Log.wtf(TAG, "FCM ID : " + token);
+//        Log.d(TAG, "FCM ID : " + token);
 //        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 //        sharedPreferences.edit().putString(UserConstant.MY_TOKEN_FCM, token).apply();
     }

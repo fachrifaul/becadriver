@@ -84,7 +84,7 @@ public class CompleteFragment extends Fragment {
         adapter.setOnItemClickListener(new TransactionAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Transaksi transaksi, int position) {
-                Log.wtf("CompleteFragment", "onItemClick: disable click" );
+                Log.d("CompleteFragment", "onItemClick: disable click" );
 
             }
         });

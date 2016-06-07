@@ -18,5 +18,6 @@
 
     <string name="transaksi">Transaksi</string>
     <string name="tidak_ada_transaksi">Tidak Ada Transaksi</string>
+    <string name="app_active">Aplikasi Aktif</string>
 
 </resources>

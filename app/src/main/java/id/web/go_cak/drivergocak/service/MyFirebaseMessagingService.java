@@ -45,7 +45,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Map data = remoteMessage.getData();
         String message = data.get("message").toString();
-        Log.wtf(TAG, "onMessageReceived: "+message );
+        Log.d(TAG, "onMessageReceived: "+message );
         sendNotification(message);
     }
 

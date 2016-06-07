@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 import java.util.Locale;
@@ -19,6 +20,10 @@ import java.util.Locale;
  */
 public class Utils {
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+    public static LatLng midPoint(double lat1, double long1, double lat2, double long2) {
+        return new LatLng((lat1 + lat2) / 2, (long1 + long2) / 2);
+    }
 
     public static boolean checkPlayServices(Activity activity) {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);

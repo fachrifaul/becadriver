@@ -35,7 +35,7 @@ public class ServiceProcess {
     }
 
     public void fetchService(String confirmation, String idTransaksi, final ProcessCallBack callback) {
-        Log.wtf("ServiceProcess", "fetchService: " + confirmation + " " + idTransaksi);
+        Log.d("ServiceProcess", "fetchService: " + confirmation + " " + idTransaksi);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstant.API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -47,7 +47,7 @@ public class ServiceProcess {
             @Override
             public void onResponse(Call<Confirmation> call, Response<Confirmation> response) {
                 if (response.isSuccessful()) {
-                    Log.wtf("ServiceProcess", response.body().getConfirmasi() + "");
+                    Log.d("ServiceProcess", response.body().getConfirmasi() + "");
                     callback.onSuccess(String.valueOf(response.body().getConfirmasi()));
                 } else {
                     callback.onFailure(context.getString(R.string.koneksi_bermasalah));

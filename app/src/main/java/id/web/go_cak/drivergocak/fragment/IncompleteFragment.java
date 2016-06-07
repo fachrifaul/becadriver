@@ -79,7 +79,7 @@ public class IncompleteFragment extends Fragment {
                     public void onFailure(String message) {
                         if (pDialog.isShowing())
                             pDialog.dismiss();
-                        Log.wtf("onFailure", "onFailure: " + message);
+                        Log.d("onFailure", "onFailure: " + message);
                         noTransactionTextView.setVisibility(View.VISIBLE);
                     }
                 });

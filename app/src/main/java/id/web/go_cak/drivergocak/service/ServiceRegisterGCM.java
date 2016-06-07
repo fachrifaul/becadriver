@@ -49,8 +49,8 @@ public class ServiceRegisterGCM {
 
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.wtf(TAG, "onResponse: " + response.message());
-                Log.wtf(TAG, "onResponse: " + response.body());
+                Log.d(TAG, "onResponse: " + response.message());
+                Log.d(TAG, "onResponse: " + response.body());
                 if (response.isSuccessful()) {
                     callback.onSuccess(response.body());
                 } else {

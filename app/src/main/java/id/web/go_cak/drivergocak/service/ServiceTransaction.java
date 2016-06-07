@@ -44,8 +44,8 @@ public class ServiceTransaction {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        Log.wtf("ServiceTransaction", "fetchService: " + driverID);
-        Log.wtf("ServiceTransaction", "type: " + type);
+        Log.d("ServiceTransaction", "fetchService: " + driverID);
+        Log.d("ServiceTransaction", "type: " + type);
 
         TransactionIncompleteUrl service = retrofit.create(TransactionIncompleteUrl.class);
 

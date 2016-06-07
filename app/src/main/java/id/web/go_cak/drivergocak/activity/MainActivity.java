@@ -1,17 +1,16 @@
 package id.web.go_cak.drivergocak.activity;
 
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -35,14 +34,12 @@ import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.adapter.MainAdapter;
 import id.web.go_cak.drivergocak.model.Dashboard;
 import id.web.go_cak.drivergocak.service.GPSTracker;
-import id.web.go_cak.drivergocak.service.GpsTrackerBootReceiver;
 import id.web.go_cak.drivergocak.service.ServiceLogout;
 import id.web.go_cak.drivergocak.service.ServiceRegisterGCM;
 import id.web.go_cak.drivergocak.session.RegisterIdSession;
 import id.web.go_cak.drivergocak.session.UserSession;
 import id.web.go_cak.drivergocak.utils.ApiConstant;
 import id.web.go_cak.drivergocak.utils.DividerItemDecoration;
-import id.web.go_cak.drivergocak.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
     @Bind(R.id.coordinatorLayout) CoordinatorLayout coordinatorLayout;
@@ -57,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private RegisterIdSession registerIdSession;
     private ProgressDialog loading;
 
-    private Context context;
     private String regIdUser;
     private static final String TAG = "MainActivity";
     private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
@@ -69,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        registerIdSession = new RegisterIdSession(this);
         userSession = new UserSession(this);
         if (userSession.checkLogin()) {
             redirectLogin();
@@ -78,12 +74,6 @@ public class MainActivity extends AppCompatActivity {
             ButterKnife.bind(this);
             setSupportActionBar(toolbar);
             versionApp();
-
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        PERMISSION_ACCESS_COARSE_LOCATION);
-            }
 
 //            versionTextView.setOnClickListener(new View.OnClickListener() {
 //                @Override
@@ -122,45 +112,47 @@ public class MainActivity extends AppCompatActivity {
 
             });
 
-
-            GPSTracker gps = new GPSTracker(this);
-            if (gps.canGetLocation()) {
-                Log.e("GPS-ENABLED", gps.getLatitude() + " " + gps.getLongitude());
-            } else {
-                gps.showSettingsAlert();
-            }
-
-            Intent intent = new Intent(this, GpsTrackerBootReceiver.class);
-            PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
-            AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                am.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), sender);
-            } else {
-                am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),60000, sender);
-            }
-
-
-            //cek GCM
-            registerIdSession = new RegisterIdSession(this);
-
-//            RegisterGcmSession registerGcmSession = new RegisterGcmSession(this);
-//            if (!registerGcmSession.checkRegsitered()) {
-//                context = getApplicationContext();
-//                if (Utils.checkPlayServices(this)) {
-//                    if (registerGcmSession.checkRegsitered()) {
-//                        regIdUser = registerIdSession.getRegistrationId();
-//                        if (regIdUser.isEmpty()) {
-//                            registerGCM();
-//                        }
-//                    } else {
-//                        registerGCM();
-//                    }
-//                }
-//            }
-
-            registerGCM();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_ACCESS_COARSE_LOCATION);
+        } else {
+            if (!isLocationEnabled()) {
+                showEnableLocationDialog();
+            } else {
+                registerGCM();
+                startService(new Intent(this, GPSTracker.class));
+            }
+        }
+    }
+
+    protected void showEnableLocationDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setMessage("GPS harus diaktifkan. Silakan ke halaman pengaturan di perangkat untuk mengaktfikannya");
+        alertDialog.setPositiveButton("Buka Halaman Pengaturan", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        });
+        alertDialog.setNegativeButton("Tutup aplikasi", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                finish();
+            }
+        });
+        alertDialog.show();
+    }
+
+    protected boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     @OnClick(R.id.fab)
@@ -171,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String message) {
                 Log.v("ServiceLogout", message);
+                stopService(new Intent(MainActivity.this, GPSTracker.class));
                 userSession.userLogoutUser();
                 loading.dismiss();
 
@@ -189,31 +182,36 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Utils.checkPlayServices(this);
     }
 
-    private void registerGCM(){
+    private void registerGCM() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 regIdUser = FirebaseInstanceId.getInstance().getToken();
-                Log.wtf(TAG, "FCM ID : " + regIdUser);
-                registerIdSession.storeRegistrationId(regIdUser);
-                new ServiceRegisterGCM(MainActivity.this).fetchService(regIdUser, userSession.getIdUser(),
-                        new ServiceRegisterGCM.RegisterGcmCallBack() {
-                            @Override
-                            public void onSuccess(String message) {
-                                Log.wtf(TAG, "onSuccess: " + message);
-                            }
+                if (regIdUser != null) {
 
-                            @Override
-                            public void onFailure(String message) {
-                                Log.wtf(TAG, "onFailure: " + message);
-                            }
-                        });
+                    Log.d(TAG, "FCM ID : " + regIdUser);
+                    registerIdSession.storeRegistrationId(regIdUser);
+                    new ServiceRegisterGCM(MainActivity.this).fetchService(regIdUser, userSession.getIdUser(),
+                            new ServiceRegisterGCM.RegisterGcmCallBack() {
+                                @Override
+                                public void onSuccess(String message) {
+                                    Log.d(TAG, "onSuccess: " + message);
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+                                    Log.d(TAG, "onFailure: " + message);
+                                }
+                            });
+                } else {
+                    registerGCM();
+                }
+
             }
-        }, 3000);
+        }, 1000);
     }
 
     @Override
@@ -247,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void versionApp(){
+    private void versionApp() {
         StringBuilder appNameStringBuilder = new StringBuilder();
         appNameStringBuilder.append(getString(R.string.app_name));
         appNameStringBuilder.append(" ");

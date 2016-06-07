@@ -46,7 +46,7 @@ public class ServiceSendLocation {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Log.wtf("ServiceProcess", response.body() + "");
+                    Log.d("ServiceProcess", response.body() + "");
                     callback.onSuccess(String.valueOf(response.body()));
                 } else {
                     callback.onFailure(context.getString(R.string.koneksi_bermasalah));
