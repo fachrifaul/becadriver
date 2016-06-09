@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**
@@ -21,10 +20,6 @@ import retrofit2.http.POST;
 public class ServiceRegisterGCM {
 
     public interface RegisterGcmUrl {
-        @Headers({
-                "Accept: application/json",
-                "Content-Type: application/json"
-        })
         @FormUrlEncoded
         @POST("insertRegsiterID")
         Call<String> registerGcm(@Field("regId") String regId, @Field("id") String id);

@@ -38,10 +38,10 @@
                 android:layout_height="200dp"/>
 
             <View
-                android:layout_width="match_parent"
                 android:id="@+id/maps_view"
-                android:background="@android:color/transparent"
-                android:layout_height="200dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@android:color/transparent"/>
 
             <RelativeLayout
                 android:id="@+id/detail_transaksi_layout"
@@ -65,6 +65,7 @@
                     android:layout_toEndOf="@+id/nama_pelanggan"
                     android:layout_toRightOf="@+id/nama_pelanggan"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textStyle="bold"
                     tools:text="Radi Permadi"
                     />
 
@@ -82,10 +83,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/nama_pelanggan_text_view"
+
                     android:layout_toEndOf="@+id/no_telp"
                     android:layout_toRightOf="@+id/no_telp"
                     android:autoLink="phone"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textStyle="bold"
                     tools:text="08124124124"
                     />
 
@@ -103,10 +106,12 @@
                     android:id="@+id/ongkos_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_below="@+id/no_telp_text_view"
                     android:layout_toEndOf="@+id/ongkos"
                     android:layout_toRightOf="@+id/ongkos"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textStyle="bold"
                     tools:text="Rp. 31.000"
                     />
 
@@ -124,7 +129,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/alamat_lengkap"
+
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textStyle="bold"
                     tools:text="Kosan 2A Kosan 2A Kosan 2A Kosan 2A Kosan 2A Kosan 2A "
                     />
 
@@ -142,11 +149,14 @@
                     android:id="@+id/asal_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_below="@+id/lokasi_asal"
                     android:layout_span="2"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textStyle="bold"
                     tools:text="Jl Setiabudi menuju Jl Mana (10km)"
                     />
+
                 <TextView
                     android:id="@+id/lokasi_tujuan"
                     android:layout_width="match_parent"
@@ -155,13 +165,16 @@
                     android:text="Lokasi Tujuan"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     />
+
                 <TextView
                     android:id="@+id/tujuan_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/lokasi_tujuan"
                     android:layout_span="2"
+
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textStyle="bold"
                     tools:text="Jl Setiabudi menuju Jl Mana (10km)"
                     />
 
@@ -170,8 +183,10 @@
                     android:id="@+id/jarak_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_below="@+id/tujuan_text_view"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textStyle="bold"
                     tools:text="(10km)"
                     />
 
