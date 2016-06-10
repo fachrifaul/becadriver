@@ -23,10 +23,12 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.activity.MainActivity;
 import id.web.go_cak.drivergocak.event.GpsEvent;
+import id.web.go_cak.drivergocak.event.LogoutEvent;
 import id.web.go_cak.drivergocak.session.UserSession;
 
 public class GPSTracker extends Service {
@@ -48,6 +50,7 @@ public class GPSTracker extends Service {
     public void onCreate() {
         super.onCreate();
         sessionManager = new UserSession(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -66,6 +69,11 @@ public class GPSTracker extends Service {
         return START_STICKY;
     }
 
+    @Subscribe
+    public void onLogoutEvent(LogoutEvent logoutEvent) {
+        stopTracking();
+    }
+
     public void stopTracking() {
         stopForeground(true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -76,6 +84,7 @@ public class GPSTracker extends Service {
 
         }
         stopSelf();
+        EventBus.getDefault().unregister(this);
     }
 
     public void startLocationUpdate() {

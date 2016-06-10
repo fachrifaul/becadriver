@@ -38,6 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import id.web.go_cak.drivergocak.R;
 import id.web.go_cak.drivergocak.adapter.MainAdapter;
 import id.web.go_cak.drivergocak.event.GpsEvent;
+import id.web.go_cak.drivergocak.event.LogoutEvent;
 import id.web.go_cak.drivergocak.model.Dashboard;
 import id.web.go_cak.drivergocak.service.GPSTracker;
 import id.web.go_cak.drivergocak.service.ServiceLogout;
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onJobReceivedEvent(GpsEvent gpsEvent) {
+    public void onGpsEvent(GpsEvent gpsEvent) {
         showEnableLocationDialog();
     }
 
@@ -210,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(String message) {
                 Log.v("ServiceLogout", message);
                 stopService(new Intent(MainActivity.this, GPSTracker.class));
+                EventBus.getDefault().post(new LogoutEvent());
                 userSession.userLogoutUser();
                 loading.dismiss();
 
@@ -221,6 +223,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(String message) {
                 Log.e("ServiceLogout", message);
+                Toast.makeText(getApplicationContext(), "Cek koneksi anda", Toast.LENGTH_LONG).show();
+                loading.dismiss();
             }
         });
     }

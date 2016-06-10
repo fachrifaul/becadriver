@@ -60,13 +60,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         myIntent.putExtra("message", msg);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                myIntent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.icon)
-                        .setContentTitle("GOCAK Notification")
-                        .setContentText("Tekan disini untuk melihat detail");
+                        .setSmallIcon(R.drawable.icon_notif)
+                        .setContentTitle("GOCAK Pekerjaan Baru")
+                        .setContentText("Buka aplikasi untuk melihat daftar pekerjaan.");
 
 
         mBuilder.setVibrate(new long[] { 100, 100, 100, 100, 100 });
