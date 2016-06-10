@@ -21,7 +21,7 @@
         <item name="colorButtonNormal">@color/color_button_normal_green</item>
     </style>
 
-    <style name="ButtonGreyTheme" parent="Theme.AppCompat.Light">
+    <style name="ButtonRedTheme" parent="Theme.AppCompat.Light">
         <item name="colorControlHighlight">@color/color_button_highlight_grey</item>
         <item name="colorButtonNormal">@color/color_button_normal_grey</item>
     </style>
