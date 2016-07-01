@@ -14,6 +14,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -126,7 +128,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
             progressDialog.dismiss();
             lokasiAsalTextView.setText(alamatJemput);
             lokasiTujuanTextView.setText(alamatTujuan);
-        } else {
+        }
+        else {
             new AddressBackground().execute();
         }
 
@@ -140,20 +143,47 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
         if (driverkonfirmasi.equals("0")) {
             prosesButton.setText("Konfirmasi Penjemputan");
             confirmation = 0;
-        } else if (driverkonfirmasi.equals("1")) {
+        }
+        else if (driverkonfirmasi.equals("1")) {
             prosesButton.setText("Proses Antar");
             callButton.setVisibility(View.VISIBLE);
             cancelButton.setVisibility(View.VISIBLE);
             confirmation = 1;
-        } else if (driverkonfirmasi.equals("2")) {
+        }
+        else if (driverkonfirmasi.equals("2")) {
             prosesButton.setText("Telah Sampai Tujuan");
             cancelButton.setVisibility(View.INVISIBLE);
             confirmation = 2;
-        } else {
+        }
+        else {
             prosesButton.setText("Konfirmasi Penjemputan");
             confirmation = 0;
         }
 
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.map_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_map:
+                //lat = y , Long = x
+                //asal/current location
+
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?saddr=" + latJemput + "," + longJemput +
+                                "&daddr=" + latTujuan + "," + longTujuan));
+                startActivity(intent);
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @OnTouch(R.id.maps_view)
@@ -186,7 +216,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     private void setOnclickCall() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, PERMISSIONS_REQUEST_PHONE_CALL);
-        } else {
+        }
+        else {
             //Open call function
             try {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -206,7 +237,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
     private void showData() {
         if (Utils.Operations.isOnline(this)) {
             route();
-        } else {
+        }
+        else {
             Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
     }
@@ -222,16 +254,19 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
                 if (messageConfirmation.equals("0")) {
                     prosesButton.setText("Konfirmasi Penjemputan");
                     confirmation = 0;
-                } else if (messageConfirmation.equals("1")) {
+                }
+                else if (messageConfirmation.equals("1")) {
                     prosesButton.setText("Proses Antar");
                     callButton.setVisibility(View.VISIBLE);
                     cancelButton.setVisibility(View.VISIBLE);
                     confirmation = 1;
-                } else if (messageConfirmation.equals("2")) {
+                }
+                else if (messageConfirmation.equals("2")) {
                     prosesButton.setText("Telah Sampai Tujuan");
                     cancelButton.setVisibility(View.INVISIBLE);
                     confirmation = 2;
-                } else if (messageConfirmation.equals("5") || messageConfirmation.equals("3")) {
+                }
+                else if (messageConfirmation.equals("5") || messageConfirmation.equals("3")) {
                     Intent sendIntent = new Intent(ConfirmationActivity.this, TransaksiActivity.class);
                     startActivity(sendIntent);
                     finish();
@@ -368,7 +403,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // All good!
                     enableMyLocation();
-                } else {
+                }
+                else {
                     mPermissionDenied = true;
                 }
                 break;
@@ -376,7 +412,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission is granted
                     setOnclickCall();
-                } else {
+                }
+                else {
                     Toast.makeText(this, "Sorry!!! Permission Denied", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -388,7 +425,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSION_ACCESS_COARSE_LOCATION);
-        } else if (map != null) {
+        }
+        else if (map != null) {
             // Access to the location has been granted to the app.
             map.setMyLocationEnabled(true);
         }
@@ -414,7 +452,8 @@ public class ConfirmationActivity extends AppCompatActivity implements RoutingLi
 
             if (detailFrom.equals("") || detailTo.equals("")) {
                 new AddressBackground().execute();
-            } else {
+            }
+            else {
                 lokasiAsalTextView.setText(detailFrom);
                 lokasiTujuanTextView.setText(detailTo);
                 progressDialog.dismiss();

@@ -1,12 +1,12 @@
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -45,7 +47,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Map data = remoteMessage.getData();
         String message = data.get("message").toString();
-        Log.d(TAG, "onMessageReceived: "+message );
+        Log.d(TAG, "onMessageReceived: " + message);
         sendNotification(message);
     }
 
@@ -53,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendNotification(String msg) {
         Log.v(TAG, "message: " + msg);
 
-        NotificationManager  mNotificationManager = (NotificationManager)
+        NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent myIntent = new Intent(this, TransaksiActivity.class);
@@ -62,17 +64,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 myIntent, PendingIntent.FLAG_ONE_SHOT);
 
+        Uri soundUri = Uri.parse("android.resource://" + getPackageName() + "/raw/bell");
+
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.icon_notif)
                         .setContentTitle("GOCAK Pekerjaan Baru")
-                        .setContentText("Buka aplikasi untuk melihat daftar pekerjaan.");
+                        .setContentText("Buka aplikasi untuk melihat daftar pekerjaan.")
+                        .setAutoCancel(true)
+                        .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                        .setLights(Color.RED, 3000, 3000)
+                        .setContentIntent(contentIntent)
+                        .setSound(soundUri, RingtoneManager.TYPE_NOTIFICATION);
 
-
-        mBuilder.setVibrate(new long[] { 100, 100, 100, 100, 100 });
-        mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-
-        mBuilder.setContentIntent(contentIntent);
         Notification notification = mBuilder.build();
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
